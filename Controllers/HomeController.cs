@@ -2,15 +2,12 @@
 using HIS_API.Templates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json; 
-
+using Newtonsoft.Json;
 
 namespace HIS_API.Controllers
 {
   public class HomeController : Controller
   {
-
-
     public IActionResult Index()
     {
       return Json("Hola");
@@ -42,7 +39,6 @@ namespace HIS_API.Controllers
               var examen = new Examen();
               examen.NombreExamen = item2.ExamenNombre;
 
-
               //array de Configuraciones
               var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
 
@@ -58,11 +54,8 @@ namespace HIS_API.Controllers
                   //Valores = db.HisValors.Where(v => v.ConfiguracionId == x.HisConfiguracionId).ToList()
                   //Configuracion_id
                   //Examen_id
-
-
                 });
                 examen.Configuraciones = arrayConfiguracion.ToList();
-
               }
               examen.NombreExamen = item2.ExamenNombre;
               arrayExamenes2.Add(examen);

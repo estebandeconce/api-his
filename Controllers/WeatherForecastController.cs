@@ -341,10 +341,8 @@ namespace HIS_API.Controllers
       }
       catch (Exception ex)
       {
-
         return null;
       }
-
     }
 
     private string getBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
@@ -352,65 +350,51 @@ namespace HIS_API.Controllers
       var Btn = $"<div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica'> <div class='examen-nombre Radiografía'>{examenNombre} </div></div>";
       return Btn;
     }
-
-    /* CON Contraste, CON Lateralidad
-     <div class="examen-container" id="1" data-contraste="Sin contraste" data-lateralidad="Sin definir">
-              
-        <div class="examen-contraste" title="SIN Contraste">SC</div>
-              
-      <div class="examen-nombre Radiografía">
-        RX CRÁNEO AP Y LATERAL
-      </div>
-              
-            <select class="examen-lateralidad">
-                <option value="Sin definir" disabled="" selected="" hidden="">LAT.</option>
-                <option value="IZQ.">IZQ.</option>
-                <option value="DER.">DER.</option>
-                <option value="BILAT.">BILAT.</option>
-            </select>
-            </div>
-     */
-
-    /* CON Contraste, SIN Lateralidad
-    <div class="examen-container" id="2" data-contraste="Sin contraste" data-lateralidad="No aplica">
-
-        <div class="examen-contraste" title="SIN Contraste">SC</div>
-
-      <div class="examen-nombre Radiografía">
-        RX CRÁNEO AP, LATERAL Y TOWNE
-      </div>
-
-            </div>
-
-     */
-
-    /* SIN Contraste, CON Lateralidad
-    <div class="examen-container" id="3" data-contraste="No aplica" data-lateralidad="Sin definir">
-
-
-      <div class="examen-nombre Radiografía">
-        RX DE HUESOS PROPIOS NASALES
-      </div>
-
-            <select class="examen-lateralidad">
-                <option value="Sin definir" disabled="" selected="" hidden="">LAT.</option>
-                <option value="IZQ.">IZQ.</option>
-                <option value="DER.">DER.</option>
-                <option value="BILAT.">BILAT.</option>
-            </select>
-            </div>
-
-     */
-
-    /* SIN Contraste, SIN Lateralidad
-     <div class="examen-container" id="4" data-contraste="No aplica" data-lateralidad="No aplica">
-
-
-          <div class="examen-nombre Radiografía">
-            RX ARCO CIGOMÁTICO
-          </div>
-
-                </div>
-     */
   }
 }
+
+/* CON Contraste, CON Lateralidad
+ <div class="examen-container" id="1" data-contraste="Sin contraste" data-lateralidad="Sin definir">
+    <div class="examen-contraste" title="SIN Contraste">SC</div>
+  <div class="examen-nombre Radiografía">
+    RX CRÁNEO AP Y LATERAL
+  </div>
+        <select class="examen-lateralidad">
+            <option value="Sin definir" disabled="" selected="" hidden="">LAT.</option>
+            <option value="IZQ.">IZQ.</option>
+            <option value="DER.">DER.</option>
+            <option value="BILAT.">BILAT.</option>
+        </select>
+        </div>
+ */
+
+/* CON Contraste, SIN Lateralidad
+<div class="examen-container" id="2" data-contraste="Sin contraste" data-lateralidad="No aplica">
+    <div class="examen-contraste" title="SIN Contraste">SC</div>
+  <div class="examen-nombre Radiografía">
+    RX CRÁNEO AP, LATERAL Y TOWNE
+  </div>
+        </div>
+ */
+
+/* SIN Contraste, CON Lateralidad
+<div class="examen-container" id="3" data-contraste="No aplica" data-lateralidad="Sin definir">
+  <div class="examen-nombre Radiografía">
+    RX DE HUESOS PROPIOS NASALES
+  </div>
+        <select class="examen-lateralidad">
+            <option value="Sin definir" disabled="" selected="" hidden="">LAT.</option>
+            <option value="IZQ.">IZQ.</option>
+            <option value="DER.">DER.</option>
+            <option value="BILAT.">BILAT.</option>
+        </select>
+        </div>
+ */
+
+/* SIN Contraste, SIN Lateralidad
+ <div class="examen-container" id="4" data-contraste="No aplica" data-lateralidad="No aplica">
+      <div class="examen-nombre Radiografía">
+        RX ARCO CIGOMÁTICO
+      </div>
+            </div>
+ */
