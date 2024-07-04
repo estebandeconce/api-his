@@ -1,0 +1,402 @@
+[
+  {
+    "NombreUnidad": "Radiografía",
+    "Regiones": [
+      {
+        "NombreRegion": "CABEZA",
+        "IconoAsignado":  "cabeza1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX CRÁNEO AP Y LATERAL",
+            "RequiereContraste": true,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CRÁNEO AP, LATERAL Y TOWNE",
+            "RequiereContraste": true,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX DE HUESOS PROPIOS NASALES",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ARCO CIGOMÁTICO",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX MANDÍBULA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX ARTICULACIÓN TEMPOROMANDIBULAR",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX DE ÓRBITA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX CAVIDADES PERINASALES",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX CARA MALAR",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          }
+        ]
+      },
+      {
+        "NombreRegion": "COLUMNA",
+        "IconoAsignado": "columna1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX COLUMNA CERVICAL AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX COLUMNA CERVICAL ATLAS AXIS",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX COLUMNA DORSAL AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX COLUMNA LUMBAR AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX SACRO COXIS AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          }
+        ]
+      },
+      {
+        "NombreRegion": "TÓRAX",
+        "IconoAsignado": "torax1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX TÓRAX AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX TÓRAX AP",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX TÓRAX PORTÁTIL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "MAMOGRAFÍA BILATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "MAMOGRAFÍA UNILATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "MAMOGRAFÍA COMPLEMENTARIA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ESTERNÓN AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX PARRILLA COSTAL (UNILATERAL)",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          }
+        ]
+      },
+      {
+        "NombreRegion": "EXTREMIDAD SUPERIOR",
+        "IconoAsignado": "brazo1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX CLAVÍCULA AP Y AXIAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ACROMOCLAVICULAR COMPARATIVA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX ESCÁPULA AP Y LATERAL (AXIAL)",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX DE HOMBRO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX HOMBRO AXILAR",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX HÚMERO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CODO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CODO OBLICUA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ANTEBRAZO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX MUÑECA AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ESCAFOIDE",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX MANO AP Y OBLICUA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX MANO LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX DEDO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX DEDO OBLICUA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          }
+        ]
+      },
+      {
+        "NombreRegion": "ABDOMEN",
+        "IconoAsignado": "abdomen1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX ABDOMEN SIMPLE AP",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX ABDOMEN SIMPLE AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX ABDOMEN PROYECCIÓN COMPLEMENTARIA (LATERAL U OBLICUA)",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          }
+        ]
+      },
+      {
+        "NombreRegion": "EXTREMIDAD INFERIOR",
+        "IconoAsignado": "pierna1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX PELVIS AP",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX PELVIS AP Y LOWENSTEIN",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX PELVIS INLET",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX PELVIS OUTLET",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX CADERA AP",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CADERA AXIAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CADERA ALAR Y OBTURATRIZ",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX SACROILIACAS",
+            "RequiereContraste": false,
+            "RequiereLateralidad": false
+          },
+          {
+            "NombreExamen": "RX FÉMUR AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX RODILLA AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX AXIAL RÓTULA (UNILATERAL)",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX TÚNEL INTERCONDILIO",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX PIERNA AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX TOBILLO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX TOBILLO MORTAJA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX PIE AP Y OBLICUO",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX PIE LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX CALCÁNEO LATERAL Y AXIAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ORTEJO AP Y LATERAL",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          },
+          {
+            "NombreExamen": "RX ORTEJO OBLICUA",
+            "RequiereContraste": false,
+            "RequiereLateralidad": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "NombreUnidad": "Escáner",
+    "Regiones": [
+      {
+        "NombreRegion": "CABEZA",
+        "IconoAsignado": "cabeza1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX CRÁNEO AP Y LATERAL",
+            "RequiereContraste": true,
+            "RequiereLateralidad": true
+          }
+        ]
+      },
+      {
+        "NombreRegion": "CUELLO",
+        "IconoAsignado": "cuello1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "CUELLO",
+            "RequiereContraste": true,
+            "RequiereLateralidad": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "NombreUnidad": "Ecotomografía",
+    "Regiones": [
+      {
+        "NombreRegion": "CABEZA",
+        "IconoAsignado": "cabeza1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX CRÁNEO AP Y LATERAL",
+            "RequiereContraste": true,
+            "RequiereLateralidad": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "NombreUnidad": "Resonancia-Magnética",
+    "Regiones": [
+      {
+        "NombreRegion": "CABEZA",
+        "IconoAsignado": "cabeza1.svg",
+        "Examenes": [
+          {
+            "NombreExamen": "RX CRÁNEO AP Y LATERAL",
+            "RequiereContraste": true,
+            "RequiereLateralidad": true
+          }
+        ]
+      }
+    ]
+  }
+]

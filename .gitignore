@@ -1,0 +1,12 @@
+ 
+.vs/
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pdb
+*.exe
+*.dll
+packages/

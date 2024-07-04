@@ -1,0 +1,351 @@
+{
+  "$id": "1",
+  "$values": [
+    {
+      "$id": "2",
+      "NombreUnidad": "ECOGRAF\u00CDA",
+      "Regiones": {
+        "$id": "3",
+        "$values": [
+          {
+            "$id": "4",
+            "NombreRegion": "REG. TOR\u00C1CICA",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "5",
+              "$values": [
+                {
+                  "$id": "6",
+                  "NombreExamen": "ECO TIROIDEA",
+                  "Configuraciones": null
+                },
+                {
+                  "$id": "7",
+                  "NombreExamen": "ECO PARTES BLANDAS, VASCULAR PERIFERICA O ARTICULAR",
+                  "Configuraciones": {
+                    "$id": "8",
+                    "$values": [
+                      {
+                        "$id": "9",
+                        "esArray": false,
+                        "esRequerido": true,
+                        "NombreConfiguracion": "lateralidad",
+                        "ValorDefecto": null,
+                        "Valores": {
+                          "$id": "10",
+                          "$values": [
+                            {
+                              "$id": "11",
+                              "Id": 1,
+                              "Nombre": "IZQ.",
+                              "ConfiguracionId": 1,
+                              "Configuracion": {
+                                "$id": "12",
+                                "Id": 1,
+                                "EsVigente": true,
+                                "Nombre": "lateralidad",
+                                "HisConfiguracionXexamen": {
+                                  "$id": "13",
+                                  "$values": [
+                                    {
+                                      "$id": "14",
+                                      "Id": 1,
+                                      "EsRequerido": true,
+                                      "ValorPorDefecto": null,
+                                      "HisConfiguracionId": 1,
+                                      "HisExamenId": 2,
+                                      "EsArray": false,
+                                      "HisConfiguracion": { "$ref": "12" }
+                                    },
+                                    {
+                                      "$id": "15",
+                                      "Id": 4,
+                                      "EsRequerido": true,
+                                      "ValorPorDefecto": null,
+                                      "HisConfiguracionId": 1,
+                                      "HisExamenId": 6,
+                                      "EsArray": false,
+                                      "HisConfiguracion": { "$ref": "12" }
+                                    },
+                                    {
+                                      "$id": "16",
+                                      "Id": 2,
+                                      "EsRequerido": true,
+                                      "ValorPorDefecto": null,
+                                      "HisConfiguracionId": 1,
+                                      "HisExamenId": 4,
+                                      "EsArray": false,
+                                      "HisConfiguracion": { "$ref": "12" }
+                                    }
+                                  ]
+                                },
+                                "HisValors": {
+                                  "$id": "17",
+                                  "$values": [
+                                    { "$ref": "11" },
+                                    {
+                                      "$id": "18",
+                                      "Id": 2,
+                                      "Nombre": "DER.",
+                                      "ConfiguracionId": 1,
+                                      "Configuracion": { "$ref": "12" }
+                                    },
+                                    {
+                                      "$id": "19",
+                                      "Id": 5,
+                                      "Nombre": "BILAT.",
+                                      "ConfiguracionId": 1,
+                                      "Configuracion": { "$ref": "12" }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            { "$ref": "18" },
+                            { "$ref": "19" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+    {
+      "$id": "20",
+      "NombreUnidad": "ESC\u00C1NER",
+      "Regiones": {
+        "$id": "21",
+        "$values": [
+          {
+            "$id": "22",
+            "NombreRegion": "MUSCULOESQ.",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "23",
+              "$values": [
+                {
+                  "$id": "24",
+                  "NombreExamen": "TAC HOMBRO",
+                  "Configuraciones": {
+                    "$id": "25",
+                    "$values": [
+                      {
+                        "$id": "26",
+                        "esArray": false,
+                        "esRequerido": true,
+                        "NombreConfiguracion": "lateralidad",
+                        "ValorDefecto": null,
+                        "Valores": {
+                          "$id": "27",
+                          "$values": [
+                            { "$ref": "11" },
+                            { "$ref": "18" },
+                            { "$ref": "19" }
+                          ]
+                        }
+                      },
+                      {
+                        "$id": "28",
+                        "esArray": false,
+                        "esRequerido": false,
+                        "NombreConfiguracion": "contraste",
+                        "ValorDefecto": null,
+                        "Valores": {
+                          "$id": "29",
+                          "$values": [
+                            {
+                              "$id": "30",
+                              "Id": 3,
+                              "Nombre": "CON CONTRASTE",
+                              "ConfiguracionId": 2,
+                              "Configuracion": {
+                                "$id": "31",
+                                "Id": 2,
+                                "EsVigente": true,
+                                "Nombre": "contraste",
+                                "HisConfiguracionXexamen": {
+                                  "$id": "32",
+                                  "$values": [
+                                    {
+                                      "$id": "33",
+                                      "Id": 5,
+                                      "EsRequerido": false,
+                                      "ValorPorDefecto": null,
+                                      "HisConfiguracionId": 2,
+                                      "HisExamenId": 6,
+                                      "EsArray": false,
+                                      "HisConfiguracion": { "$ref": "31" }
+                                    },
+                                    {
+                                      "$id": "34",
+                                      "Id": 3,
+                                      "EsRequerido": true,
+                                      "ValorPorDefecto": 3,
+                                      "HisConfiguracionId": 2,
+                                      "HisExamenId": 5,
+                                      "EsArray": false,
+                                      "HisConfiguracion": { "$ref": "31" }
+                                    }
+                                  ]
+                                },
+                                "HisValors": {
+                                  "$id": "35",
+                                  "$values": [
+                                    { "$ref": "30" },
+                                    {
+                                      "$id": "36",
+                                      "Id": 4,
+                                      "Nombre": "SIN CONTRASTE",
+                                      "ConfiguracionId": 2,
+                                      "Configuracion": { "$ref": "31" }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            { "$ref": "36" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "$id": "37",
+            "NombreRegion": "CABEZA Y CUELLO",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "38",
+              "$values": [
+                {
+                  "$id": "39",
+                  "NombreExamen": "ANGIOTAC DE CUELLO",
+                  "Configuraciones": null
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "$id": "40",
+      "NombreUnidad": "FLUOROSCOP\u00CDA",
+      "Regiones": {
+        "$id": "41",
+        "$values": [
+          {
+            "$id": "42",
+            "NombreRegion": "REG. TOR\u00C1CICA",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "43",
+              "$values": [
+                {
+                  "$id": "44",
+                  "NombreExamen": "ENEMA BARITADO COLON (LLENE Y CONTROL POST VACIAMIENTO)",
+                  "Configuraciones": {
+                    "$id": "45",
+                    "$values": [
+                      {
+                        "$id": "46",
+                        "esArray": false,
+                        "esRequerido": true,
+                        "NombreConfiguracion": "contraste",
+                        "ValorDefecto": 3,
+                        "Valores": {
+                          "$id": "47",
+                          "$values": [
+                            { "$ref": "30" },
+                            { "$ref": "36" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "$id": "48",
+      "NombreUnidad": "RADIOGRAF\u00CDA",
+      "Regiones": {
+        "$id": "49",
+        "$values": [
+          {
+            "$id": "50",
+            "NombreRegion": "CABEZA",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "51",
+              "$values": [
+                {
+                  "$id": "52",
+                  "NombreExamen": "RX CAVIDADES PERINASALES 2 EXP",
+                  "Configuraciones": null
+                }
+              ]
+            }
+          },
+          {
+            "$id": "53",
+            "NombreRegion": "PELVIS",
+            "IconoAsignado": null,
+            "Examenes": {
+              "$id": "54",
+              "$values": [
+                {
+                  "$id": "55",
+                  "NombreExamen": "RX CADERA AP 1 EXP",
+                  "Configuraciones": {
+                    "$id": "56",
+                    "$values": [
+                      {
+                        "$id": "57",
+                        "esArray": false,
+                        "esRequerido": true,
+                        "NombreConfiguracion": "lateralidad",
+                        "ValorDefecto": null,
+                        "Valores": {
+                          "$id": "58",
+                          "$values": [
+                            { "$ref": "11" },
+                            { "$ref": "18" },
+                            { "$ref": "19" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
