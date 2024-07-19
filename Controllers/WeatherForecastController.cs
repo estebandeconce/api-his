@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace HIS_API.Controllers
 //Data Source=10.5.214.129;Initial Catalog=DB_HIS;Persist Security Info=True;User ID=TIC;Password=Tic***H$p;Encrypt=True;Trust Server Certificate=True
@@ -32,191 +33,191 @@ namespace HIS_API.Controllers
       _logger = logger;
     }
 
-    [HttpGet("get1")]
-    public ExamenMoedel Get1()
-    {
-      try
-      {
-        var valores = new List<Valor>();
-        var arrayTipoExamen = new List<TipoExamen>();
+    //[HttpGet("get1")]
+    //public ExamenMoedel Get1()
+    //{
+    //  try
+    //  {
+    //    var valores = new List<Valor>();
+    //    var arrayTipoExamen = new List<TipoExamen>();
 
-        using (var db = new DbHisContext())
-        {
+    //    using (var db = new DbHisContext())
+    //    {
 
-          valores = db.HisValors.Select(v => new Valor()
-          {
-            configuracion = v.ConfiguracionId,
-            id = v.Id,
-            nombre = v.Nombre
-          }).ToList();
-          var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
+    //      valores = db.HisValors.Select(v => new Valor()
+    //      {
+    //        configuracion = v.ConfiguracionId,
+    //        id = v.Id,
+    //        nombre = v.Nombre
+    //      }).ToList();
+    //      var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
 
-          foreach (var items in arrayExamenes)
-          {
+    //      foreach (var items in arrayExamenes)
+    //      {
 
-            //primer nivel 
-            var tipoExamen = new TipoExamen();
-            tipoExamen.NombreUnidad = items.Key;
-            var arrayRegiones = new List<Region>();
+    //        //primer nivel 
+    //        var tipoExamen = new TipoExamen();
+    //        tipoExamen.NombreUnidad = items.Key;
+    //        var arrayRegiones = new List<Region>();
 
-            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
-            {
-              //segundo nivel
+    //        foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
+    //        {
+    //          //segundo nivel
 
-              var region = new Region();
-              region.NombreRegion = item.Key;
-              arrayRegiones.Add(region);
-              var arrayExamenes2 = new List<Examen>();
+    //          var region = new Region();
+    //          region.NombreRegion = item.Key;
+    //          arrayRegiones.Add(region);
+    //          var arrayExamenes2 = new List<Examen>();
 
-              foreach (var item2 in item.ToList())
-              {
+    //          foreach (var item2 in item.ToList())
+    //          {
 
-                //tercer nivel
-                var examen = new Examen();
-                examen.NombreExamen = item2.ExamenNombre;
-
-
-                //array de Configuraciones
-
-                var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
-                if (result.Count > 0)
-                {
-                  var arrayConfiguracion = result.Select(x => new Configuracion()
-                  {
-                    esArray = x.EsArray.HasValue ? x.EsArray.Value : false,
-                    esRequerido = x.EsRequerido.HasValue ? x.EsRequerido.Value : false,
-                    //valorPorDefecto
-                    ValorDefecto = x.ValorPorDefecto,
-                    NombreConfiguracion = x.HisConfiguracion.Nombre,
-
-                    //Configuracion_id
-                    //Examen_id
+    //            //tercer nivel
+    //            var examen = new Examen();
+    //            examen.NombreExamen = item2.ExamenNombre;
 
 
-                  });
-                  examen.Configuraciones = arrayConfiguracion.ToList();
+    //            //array de Configuraciones
 
-                }
+    //            var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
+    //            if (result.Count > 0)
+    //            {
+    //              var arrayConfiguracion = result.Select(x => new Configuracion()
+    //              {
+    //                esArray = x.EsArray.HasValue ? x.EsArray.Value : false,
+    //                esRequerido = x.EsRequerido.HasValue ? x.EsRequerido.Value : false,
+    //                //valorPorDefecto
+    //                ValorDefecto = x.ValorPorDefecto,
+    //                NombreConfiguracion = x.HisConfiguracion.Nombre,
 
-
-                arrayExamenes2.Add(examen);
-              }
-
-
-              region.Examenes = arrayExamenes2;
-            }
-            tipoExamen.Regiones = arrayRegiones;
-            arrayTipoExamen.Add(tipoExamen);
-          }
-        }
-        //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
-        return new ExamenMoedel()
-        {
-          Examenes = arrayTipoExamen,
-          Valores = valores
-        };
-
-      }
-      catch (Exception ex)
-      {
-
-        return null;
-      }
-
-    }
-
-    [HttpGet("get2")]
-    public ExamenMoedel Get2()
-    {
-      try
-      {
-        var valores = new List<Valor>();
-        var arrayTipoExamen = new List<TipoExamen>();
-
-        using (var db = new DbHisContext())
-        {
-
-          valores = db.HisValors.Select(v => new Valor()
-          {
-            configuracion = v.ConfiguracionId,
-            id = v.Id,
-            nombre = v.Nombre
-          }).ToList();
-          var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
-
-          foreach (var items in arrayExamenes)
-          {
-
-            //primer nivel 
-            var tipoExamen = new TipoExamen();
-            tipoExamen.NombreUnidad = items.Key;
-            var arrayRegiones = new List<Region>();
-
-            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
-            {
-              //segundo nivel
-
-              var region = new Region();
-              region.NombreRegion = item.Key;
-              arrayRegiones.Add(region);
-              var arrayExamenes2 = new List<Examen>();
-
-              foreach (var item2 in item.ToList())
-              {
-
-                //tercer nivel
-                var examen = new Examen();
-                examen.NombreExamen = item2.ExamenNombre;
+    //                //Configuracion_id
+    //                //Examen_id
 
 
-                //array de Configuraciones
+    //              });
+    //              examen.Configuraciones = arrayConfiguracion.ToList();
 
-                var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
-                if (result.Count > 0)
-                {
-                  var arrayConfiguracion = result.Select(x => new Configuracion()
-                  {
-                    esArray = x.EsArray.HasValue ? x.EsArray.Value : false,
-                    esRequerido = x.EsRequerido.HasValue ? x.EsRequerido.Value : false,
-                    //valorPorDefecto
-                    ValorDefecto = x.ValorPorDefecto,
-                    NombreConfiguracion = x.HisConfiguracion.Nombre,
-
-                    //Configuracion_id
-                    //Examen_id
+    //            }
 
 
-                  });
-                  examen.Configuraciones = arrayConfiguracion.ToList();
-
-                }
+    //            arrayExamenes2.Add(examen);
+    //          }
 
 
-                arrayExamenes2.Add(examen);
-              }
+    //          region.Examenes = arrayExamenes2;
+    //        }
+    //        tipoExamen.Regiones = arrayRegiones;
+    //        arrayTipoExamen.Add(tipoExamen);
+    //      }
+    //    }
+    //    //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
+    //    return new ExamenMoedel()
+    //    {
+    //      Examenes = arrayTipoExamen,
+    //      Valores = valores
+    //    };
+
+    //  }
+    //  catch (Exception ex)
+    //  {
+
+    //    return null;
+    //  }
+
+    //}
+
+    //[HttpGet("get2")]
+    //public ExamenMoedel Get2()
+    //{
+    //  try
+    //  {
+    //    var valores = new List<Valor>();
+    //    var arrayTipoExamen = new List<TipoExamen>();
+
+    //    using (var db = new DbHisContext())
+    //    {
+
+    //      valores = db.HisValors.Select(v => new Valor()
+    //      {
+    //        configuracion = v.ConfiguracionId,
+    //        id = v.Id,
+    //        nombre = v.Nombre
+    //      }).ToList();
+    //      var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
+
+    //      foreach (var items in arrayExamenes)
+    //      {
+
+    //        //primer nivel 
+    //        var tipoExamen = new TipoExamen();
+    //        tipoExamen.NombreUnidad = items.Key;
+    //        var arrayRegiones = new List<Region>();
+
+    //        foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
+    //        {
+    //          //segundo nivel
+
+    //          var region = new Region();
+    //          region.NombreRegion = item.Key;
+    //          arrayRegiones.Add(region);
+    //          var arrayExamenes2 = new List<Examen>();
+
+    //          foreach (var item2 in item.ToList())
+    //          {
+
+    //            //tercer nivel
+    //            var examen = new Examen();
+    //            examen.NombreExamen = item2.ExamenNombre;
 
 
-              region.Examenes = arrayExamenes2;
-            }
-            tipoExamen.Regiones = arrayRegiones;
-            arrayTipoExamen.Add(tipoExamen);
-          }
-        }
-        //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
-        return new ExamenMoedel()
-        {
-          Examenes = arrayTipoExamen,
-          Valores = valores
-        };
+    //            //array de Configuraciones
 
-      }
-      catch (Exception ex)
-      {
+    //            var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
+    //            if (result.Count > 0)
+    //            {
+    //              var arrayConfiguracion = result.Select(x => new Configuracion()
+    //              {
+    //                esArray = x.EsArray.HasValue ? x.EsArray.Value : false,
+    //                esRequerido = x.EsRequerido.HasValue ? x.EsRequerido.Value : false,
+    //                //valorPorDefecto
+    //                ValorDefecto = x.ValorPorDefecto,
+    //                NombreConfiguracion = x.HisConfiguracion.Nombre,
 
-        return null;
-      }
+    //                //Configuracion_id
+    //                //Examen_id
 
-    }
+
+    //              });
+    //              examen.Configuraciones = arrayConfiguracion.ToList();
+
+    //            }
+
+
+    //            arrayExamenes2.Add(examen);
+    //          }
+
+
+    //          region.Examenes = arrayExamenes2;
+    //        }
+    //        tipoExamen.Regiones = arrayRegiones;
+    //        arrayTipoExamen.Add(tipoExamen);
+    //      }
+    //    }
+    //    //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
+    //    return new ExamenMoedel()
+    //    {
+    //      Examenes = arrayTipoExamen,
+    //      Valores = valores
+    //    };
+
+    //  }
+    //  catch (Exception ex)
+    //  {
+
+    //    return null;
+    //  }
+
+    //}
 
     [HttpGet("get3")]
     public RenderBtn Get3()
@@ -251,6 +252,11 @@ namespace HIS_API.Controllers
 
               var region = new RegionBtn();
               region.NombreRegion = item.Key;
+
+              // Aquí se carga la rutaIcono para la región actual
+              var regionInfo = db.HisRegions.FirstOrDefault(r => r.Nombre == item.Key);
+              region.RutaIcono = regionInfo?.RutaIcono; // Asegúrate de que tu modelo RegionBtn tenga una propiedad RutaIcono
+
               arrayRegiones.Add(region);
               var arrayExamenes2 = new List<string>();
 
@@ -292,7 +298,7 @@ namespace HIS_API.Controllers
         var arrayTipoExamen = new List<TipoExamenBtn>();
 
         using (var db = new DbHisContext())
-        {
+            {
 
           valores = db.HisValors.Select(v => new Valor()
           {
@@ -303,8 +309,8 @@ namespace HIS_API.Controllers
           var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
 
           foreach (var items in arrayExamenes)
-          {
-
+      {
+        
             //primer nivel 
             var tipoExamen = new TipoExamenBtn();
             tipoExamen.NombreUnidad = items.Key;
@@ -323,7 +329,7 @@ namespace HIS_API.Controllers
               {
                 var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
                 arrayExamenes2.Add(getBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
-              }
+    }
               region.Btn = arrayExamenes2;
 
             }
@@ -333,7 +339,7 @@ namespace HIS_API.Controllers
         }
         //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
         return new RenderBtn()
-        {
+    {
           Examenes = arrayTipoExamen,
 
         };
@@ -343,13 +349,81 @@ namespace HIS_API.Controllers
       {
         return null;
       }
-    }
+      }
 
     private string getBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
     {
       var Btn = $"<div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica'> <div class='examen-nombre Radiografía'>{examenNombre} </div></div>";
       return Btn;
     }
+
+
+
+
+
+    //[HttpPost(Name = "PostWeatherForecast")]
+    //public RenderBtn Post()
+    //{
+    //  try
+    //  {
+    //    var valores = new List<Valor>();
+    //    var arrayTipoExamen = new List<TipoExamenBtn>();
+
+    //    using (var db = new DbHisContext())
+    //    {
+
+    //      valores = db.HisValors.Select(v => new Valor()
+    //      {
+    //        configuracion = v.ConfiguracionId,
+    //        id = v.Id,
+    //        nombre = v.Nombre
+    //      }).ToList();
+    //      var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
+
+    //      foreach (var items in arrayExamenes)
+    //      {
+
+    //        //primer nivel 
+    //        var tipoExamen = new TipoExamenBtn();
+    //        tipoExamen.NombreUnidad = items.Key;
+    //        var arrayRegiones = new List<RegionBtn>();
+
+    //        foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
+    //        {
+    //          //segundo nivel
+
+    //          var region = new RegionBtn();
+    //          region.NombreRegion = item.Key;
+    //          arrayRegiones.Add(region);
+    //          var arrayExamenes2 = new List<string>();
+
+    //          foreach (var item2 in item.ToList())
+    //          {
+    //            var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
+    //            arrayExamenes2.Add(getBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
+    //          }
+    //          region.Btn = arrayExamenes2;
+
+    //        }
+    //        tipoExamen.Regiones = arrayRegiones;
+    //        arrayTipoExamen.Add(tipoExamen);
+    //      }
+    //    }
+    //    //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
+    //    return new RenderBtn()
+    //    {
+    //      Examenes = arrayTipoExamen,
+
+    //    };
+
+    //  }
+    //  catch (Exception ex)
+    //  {
+    //    return null;
+    //  }
+    //}
+
+
   }
 }
 
@@ -396,5 +470,6 @@ namespace HIS_API.Controllers
       <div class="examen-nombre Radiografía">
         RX ARCO CIGOMÁTICO
       </div>
-            </div>
+
+ </div>
  */

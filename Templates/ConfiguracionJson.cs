@@ -35,13 +35,13 @@ namespace HIS_API.Templates
   public class Region
   {
     public string NombreRegion { get; set; }
-    public string IconoAsignado { get; set; }
+    public string RutaIcono { get; set; }
     public List<Examen> Examenes { get; set; }
   }
   public class RegionBtn
   {
     public string NombreRegion { get; set; }
-    public string IconoAsignado { get; set; }
+    public string RutaIcono { get; set; }
     public List<string> Btn { get; set; }
   }
 
