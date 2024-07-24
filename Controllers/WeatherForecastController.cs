@@ -298,7 +298,7 @@ namespace HIS_API.Controllers
         var arrayTipoExamen = new List<TipoExamenBtn>();
 
         using (var db = new DbHisContext())
-            {
+        {
 
           valores = db.HisValors.Select(v => new Valor()
           {
@@ -309,8 +309,8 @@ namespace HIS_API.Controllers
           var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
 
           foreach (var items in arrayExamenes)
-      {
-        
+          {
+
             //primer nivel 
             var tipoExamen = new TipoExamenBtn();
             tipoExamen.NombreUnidad = items.Key;
@@ -329,7 +329,7 @@ namespace HIS_API.Controllers
               {
                 var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
                 arrayExamenes2.Add(getBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
-    }
+              }
               region.Btn = arrayExamenes2;
 
             }
@@ -339,7 +339,7 @@ namespace HIS_API.Controllers
         }
         //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
         return new RenderBtn()
-    {
+        {
           Examenes = arrayTipoExamen,
 
         };
@@ -349,17 +349,67 @@ namespace HIS_API.Controllers
       {
         return null;
       }
-      }
+    }
 
     private string getBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
     {
-      var Btn = $"<div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica'> <div class='examen-nombre Radiografía'>{examenNombre} </div></div>";
-      return Btn;
+      //if CXE is empty se renderiza un btn sin configuración
+      int numConfiguracionesXExamen = CXE.Count;
+      string Btn;
+
+      if (numConfiguracionesXExamen == 0)
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica'>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          </div>";
+        return Btn;
+      }
+
+      else if (numConfiguracionesXExamen == 2)
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir'>
+            <div class='examen-contraste' title='SIN Contraste'>SC</div>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <select class='examen-lateralidad'>
+              <option value='Sin definir' disabled selected hidden>LAT.</option>
+              <option value='IZQ.'>IZQ.</option>
+              <option value='DER.'>DER.</option>
+              <option value='BILAT.'>BILAT.</option>
+            </select>
+          </div>";
+        return Btn;
+      }
+
+      else if (CXE[0].HisConfiguracion.Nombre == "contraste")
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica'>
+            <div class='examen-contraste' title='SIN Contraste'>SC</div>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          </div>";
+        return Btn;
+      }
+
+      else
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir'>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <select class='examen-lateralidad'>
+              <option value='Sin definir' disabled selected hidden>LAT.</option>
+              <option value='IZQ.'>IZQ.</option>
+              <option value='DER.'>DER.</option>
+              <option value='BILAT.'>BILAT.</option>
+            </select>
+          </div>";
+        return Btn;
+      }
+
+      //Btn = $"<div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-N='{i}' data-N2='{numConfiguracionesXExamen}' data-Configuracion='{data1}' dataValorDefecto='{data2}' dataEsRequerido='{data3}' dataConfiguracionId='{data4}' dataExamenId='{data5}'><div class='examen-nombre Radiografía'>{examenNombre}</div></div>";
+      //return Btn;
     }
-
-
-
-
 
     //[HttpPost(Name = "PostWeatherForecast")]
     //public RenderBtn Post()
