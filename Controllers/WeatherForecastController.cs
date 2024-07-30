@@ -21,11 +21,6 @@ namespace HIS_API.Controllers
   [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
   public class WeatherForecastController : ControllerBase
   {
-    
-
-
-    
-
     [HttpPost("post1")]
     public IActionResult F1([FromBody] TipoExamenRequest request)
     {
@@ -62,28 +57,32 @@ namespace HIS_API.Controllers
         using (var db = new DbHisContext())
         {
 
-          valores = db.HisValors.Select(v => new Valor()
+          valores = [.. db.HisValors.Select(v => new Valor()
           {
             configuracion = v.ConfiguracionId,
             id = v.Id,
             nombre = v.Nombre
-          }).ToList();
+          })];
           var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
 
           foreach (var items in arrayExamenes)
           {
 
             //primer nivel 
-            var tipoExamen = new TipoExamenBtn();
-            tipoExamen.NombreUnidad = items.Key;
+            var tipoExamen = new TipoExamenBtn
+            {
+              NombreUnidad = items.Key
+            };
             var arrayRegiones = new List<RegionBtn>();
 
             foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
             {
               //segundo nivel
 
-              var region = new RegionBtn();
-              region.NombreRegion = item.Key;
+              var region = new RegionBtn
+              {
+                NombreRegion = item.Key
+              };
 
               // Aquí se carga la rutaIcono para la región actual
               var regionInfo = db.HisRegions.FirstOrDefault(r => r.Nombre == item.Key);
@@ -95,7 +94,7 @@ namespace HIS_API.Controllers
               foreach (var item2 in item.ToList())
               {
                 var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
-                arrayExamenes2.Add(getBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
+                arrayExamenes2.Add(GetBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
               }
               region.Btn = arrayExamenes2;
 
@@ -117,10 +116,9 @@ namespace HIS_API.Controllers
 
         return null;
       }
-
     }
 
-    private string getBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
+    private static string GetBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
     {
       //if CXE is empty se renderiza un btn sin configuración
       int numConfiguracionesXExamen = CXE.Count;

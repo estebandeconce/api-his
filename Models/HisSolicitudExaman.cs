@@ -15,5 +15,5 @@ public partial class HisSolicitudExaman
 
     public int? Ctacte { get; set; }
 
-    public virtual ICollection<HisFundamento> HisFundamentos { get; set; } = new List<HisFundamento>();
+    public virtual ICollection<HisFundamento> HisFundamentos { get; set; } = [];
 }
