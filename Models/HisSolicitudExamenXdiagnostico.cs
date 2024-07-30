@@ -9,7 +9,5 @@ public partial class HisSolicitudExamenXdiagnostico
 
     public int? DiagnosticoId { get; set; }
 
-    public virtual HisDiagnostico? Diagnostico { get; set; }
-
     public virtual HisSolicitudExaman? SolExam { get; set; }
 }

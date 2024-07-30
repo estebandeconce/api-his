@@ -25,8 +25,6 @@ public partial class DbHisContext : DbContext
 
     public virtual DbSet<HisContrasteXexaman> HisContrasteXexamen { get; set; }
 
-    public virtual DbSet<HisDiagnostico> HisDiagnosticos { get; set; }
-
     public virtual DbSet<HisExamDerivado> HisExamDerivados { get; set; }
 
     public virtual DbSet<HisExaman> HisExamen { get; set; }
@@ -115,20 +113,7 @@ public partial class DbHisContext : DbContext
                 .HasConstraintName("FK_HIS_ContrasteXExamen_HIS_Examen");
         });
 
-        modelBuilder.Entity<HisDiagnostico>(entity =>
-        {
-            entity.HasKey(e => e.DiagnosticoId);
-
-            entity.ToTable("HIS_Diagnostico", "dbo");
-
-            entity.Property(e => e.DiagnosticoId)
-                .ValueGeneratedNever()
-                .HasColumnName("Diagnostico_id");
-            entity.Property(e => e.DiagnosticoDescripcion)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("Diagnostico_descripcion");
-        });
+      
 
         modelBuilder.Entity<HisExamDerivado>(entity =>
         {
@@ -280,10 +265,6 @@ public partial class DbHisContext : DbContext
 
             entity.Property(e => e.DiagnosticoId).HasColumnName("Diagnostico_Id");
             entity.Property(e => e.SolExamId).HasColumnName("solExam_Id");
-
-            entity.HasOne(d => d.Diagnostico).WithMany()
-                .HasForeignKey(d => d.DiagnosticoId)
-                .HasConstraintName("FK_HIS_SolicitudExamenXdiagnostico_HIS_Diagnostico");
 
             entity.HasOne(d => d.SolExam).WithMany()
                 .HasForeignKey(d => d.SolExamId)
