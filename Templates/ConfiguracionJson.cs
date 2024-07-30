@@ -8,6 +8,11 @@ namespace HIS_API.Templates
     public List<Valor> Valores { get; set; }
   }
 
+  public class TipoExamenRequest
+  {
+    public string NombreAdicional { get; set; }
+  }
+
   public class RenderBtn
   {
     public List<TipoExamenBtn> Examenes { get; set; }

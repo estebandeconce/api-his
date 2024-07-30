@@ -33,6 +33,31 @@ namespace HIS_API.Controllers
       _logger = logger;
     }
 
+    [HttpPost("post1")]
+    public IActionResult F1([FromBody] TipoExamenRequest request)
+    {
+      try
+      {
+        using (var db = new DbHisContext())
+        {
+          var nuevoTipoExamen = new HisTipoExaman
+          {
+            Nombre = request.NombreAdicional
+          };
+
+          db.HisTipoExamen.Add(nuevoTipoExamen);
+          db.SaveChanges();
+        }
+
+        return Ok(new { message = $"Tipo de examen '{request.NombreAdicional}' agregado exitosamente." });
+      }
+      catch (Exception ex)
+      {
+        // Manejo de errores
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+      }
+    }
+
     [HttpGet("get3")]
     public RenderBtn Get3()
     {
@@ -86,7 +111,7 @@ namespace HIS_API.Controllers
             arrayTipoExamen.Add(tipoExamen);
           }
         }
-     
+
         return new RenderBtn()
         {
           Examenes = arrayTipoExamen,
@@ -100,69 +125,6 @@ namespace HIS_API.Controllers
         return null;
       }
 
-    }
-
-
-    [HttpPost(Name = "PostWeatherForecast")]
-    public RenderBtn Post()
-    {
-      try
-      {
-        var valores = new List<Valor>();
-        var arrayTipoExamen = new List<TipoExamenBtn>();
-
-        using (var db = new DbHisContext())
-        {
-
-          valores = db.HisValors.Select(v => new Valor()
-          {
-            configuracion = v.ConfiguracionId,
-            id = v.Id,
-            nombre = v.Nombre
-          }).ToList();
-          var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").GroupBy(tipoExamen => tipoExamen.TipoExNombre).ToList();
-
-          foreach (var items in arrayExamenes)
-          {
-
-            //primer nivel 
-            var tipoExamen = new TipoExamenBtn();
-            tipoExamen.NombreUnidad = items.Key;
-            var arrayRegiones = new List<RegionBtn>();
-
-            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
-            {
-              //segundo nivel
-
-              var region = new RegionBtn();
-              region.NombreRegion = item.Key;
-              arrayRegiones.Add(region);
-              var arrayExamenes2 = new List<string>();
-
-              foreach (var item2 in item.ToList())
-              {
-                var result = db.HisConfiguracionXexamen.Include(c => c.HisConfiguracion).Where(c => c.HisExamenId == item2.ExamenId).ToList();
-                arrayExamenes2.Add(getBtnHtml(valores, result, item2.ExamenNombre, item2.ExamenId));
-              }
-              region.Btn = arrayExamenes2;
-
-            }
-            tipoExamen.Regiones = arrayRegiones;
-            arrayTipoExamen.Add(tipoExamen);
-          }
-        }
-        //var examenesJson = JsonSerializer.Serialize(arrayTipoExamen, new JsonSerializerOptions() {ReferenceHandler = ReferenceHandler.Preserve });
-        return new RenderBtn()
-        {
-          Examenes = arrayTipoExamen,
-
-        };
-
-      }
-      catch (Exception ex)
-      {
-        return null;
-      }
     }
 
     private string getBtnHtml(List<Valor> Valor, List<HisConfiguracionXexaman> CXE, string examenNombre, int examenId)
