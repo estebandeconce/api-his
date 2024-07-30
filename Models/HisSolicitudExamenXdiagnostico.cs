@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HIS_API.Models;
 
-public partial class HisSolicitudExamenXddiagnostico
+public partial class HisSolicitudExamenXdiagnostico
 {
     public int? SolExamId { get; set; }
 

@@ -43,13 +43,11 @@ public partial class DbHisContext : DbContext
 
     public virtual DbSet<HisSolicitudExaman> HisSolicitudExamen { get; set; }
 
-    public virtual DbSet<HisSolicitudExamenXddiagnostico> HisSolicitudExamenXddiagnosticos { get; set; }
+    public virtual DbSet<HisSolicitudExamenXdiagnostico> HisSolicitudExamenXddiagnosticos { get; set; }
 
     public virtual DbSet<HisTipoExaman> HisTipoExamen { get; set; }
 
     public virtual DbSet<HisValor> HisValors { get; set; }
-
-    public virtual DbSet<RegionXtipoExaman> RegionXtipoExamen { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -274,7 +272,7 @@ public partial class DbHisContext : DbContext
             entity.Property(e => e.SolExamDiagnosticoId).HasColumnName("SolExam_Diagnostico_id");
         });
 
-        modelBuilder.Entity<HisSolicitudExamenXddiagnostico>(entity =>
+        modelBuilder.Entity<HisSolicitudExamenXdiagnostico>(entity =>
         {
             entity
                 .HasNoKey()
@@ -320,18 +318,6 @@ public partial class DbHisContext : DbContext
                 .HasForeignKey(d => d.ConfiguracionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HIS_Valor_HIS_Configuracion");
-        });
-
-        modelBuilder.Entity<RegionXtipoExaman>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("RegionXTipoExamen", "dbo");
-
-            entity.Property(e => e.Id)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("id");
         });
 
         OnModelCreatingPartial(modelBuilder);
