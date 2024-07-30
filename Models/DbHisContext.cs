@@ -261,7 +261,7 @@ public partial class DbHisContext : DbContext
         {
             entity
                 .HasNoKey()
-                .ToTable("HIS_SolicitudExamenXdiagnostico", "dbo");
+                .ToTable("HIS_SolicitudExamenXDiagnostico", "dbo");
 
             entity.Property(e => e.DiagnosticoId).HasColumnName("Diagnostico_Id");
             entity.Property(e => e.SolExamId).HasColumnName("solExam_Id");

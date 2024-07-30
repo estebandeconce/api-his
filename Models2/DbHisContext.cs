@@ -25,8 +25,6 @@ public partial class DbHisContext : DbContext
 
     public virtual DbSet<HisContrasteXexaman> HisContrasteXexamen { get; set; }
 
-    public virtual DbSet<HisDiagnostico> HisDiagnosticos { get; set; }
-
     public virtual DbSet<HisExamDerivado> HisExamDerivados { get; set; }
 
     public virtual DbSet<HisExaman> HisExamen { get; set; }
@@ -141,21 +139,6 @@ public partial class DbHisContext : DbContext
                 .HasForeignKey<HisContrasteXexaman>(d => d.ExaIde)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HIS_ContrasteXExamen_HIS_ExamenXSolicitudExamen");
-        });
-
-        modelBuilder.Entity<HisDiagnostico>(entity =>
-        {
-            entity.HasKey(e => e.DiagnosticoId);
-
-            entity.ToTable("HIS_Diagnostico", "dbo");
-
-            entity.Property(e => e.DiagnosticoId)
-                .ValueGeneratedNever()
-                .HasColumnName("Diagnostico_id");
-            entity.Property(e => e.DiagnosticoDescripcion)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("Diagnostico_descripcion");
         });
 
         modelBuilder.Entity<HisExamDerivado>(entity =>
@@ -304,20 +287,20 @@ public partial class DbHisContext : DbContext
 
         modelBuilder.Entity<HisSolicitudExamenXdiagnostico>(entity =>
         {
-            entity.HasKey(e => e.SolicitudExamenId);
+            entity.HasKey(e => e.DiagnosticoId).HasName("PK_HIS_SolicitudExamenXDiagnostico_1");
 
             entity.ToTable("HIS_SolicitudExamenXDiagnostico", "dbo");
 
-            entity.Property(e => e.SolicitudExamenId).HasColumnName("SolicitudExamen_id");
+            entity.Property(e => e.DiagnosticoId).HasColumnName("Diagnostico_id");
             entity.Property(e => e.DiagnosticoDescripcion)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("Diagnostico_descripcion");
-            entity.Property(e => e.DiagnosticoId).HasColumnName("Diagnostico_id");
+            entity.Property(e => e.SolicitudExamenId).HasColumnName("SolicitudExamen_id");
 
-            entity.HasOne(d => d.Diagnostico).WithMany(p => p.HisSolicitudExamenXdiagnosticos)
-                .HasForeignKey(d => d.DiagnosticoId)
-                .HasConstraintName("FK_HIS_SolicitudExamenXdiagnostico_HIS_SolicitudExamen");
+            entity.HasOne(d => d.SolicitudExamen).WithMany(p => p.HisSolicitudExamenXdiagnosticos)
+                .HasForeignKey(d => d.SolicitudExamenId)
+                .HasConstraintName("FK_HIS_SolicitudExamenXDiagnostico_HIS_SolicitudExamen");
         });
 
         modelBuilder.Entity<HisTipoExaman>(entity =>
