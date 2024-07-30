@@ -5,17 +5,19 @@ namespace HIS_API.Models;
 
 public partial class HisExaman
 {
-    public int Id { get; set; }
+  public int Id { get; set; }
 
-    public string? CodigoFonasa { get; set; }
+  public string? CodigoFonasa { get; set; }
 
-    public string Nombre { get; set; } = null!;
+  public string Nombre { get; set; } = null!;
 
-    public int RegionId { get; set; }
+  public bool? Visible { get; set; }
 
-    public int TipoExamenId { get; set; }
+  public int RegionId { get; set; }
 
-    public virtual HisRegion Region { get; set; } = null!;
+  public int TipoExamenId { get; set; }
 
-    public virtual HisTipoExaman TipoExamen { get; set; } = null!;
+  public virtual HisRegion Region { get; set; } = null!;
+
+  public virtual HisTipoExaman TipoExamen { get; set; } = null!;
 }
