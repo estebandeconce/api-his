@@ -100,7 +100,8 @@ namespace HIS_API.Controllers
           }
           db.SaveChanges();
 
-          return Ok(new { message = "Solicitud creada exitosamente." });
+          // Devolver el ID de la solicitud recién creada
+          return Ok(new { SolicitudId = solicitudId });
         }
       }
       catch (Exception ex)
@@ -109,7 +110,6 @@ namespace HIS_API.Controllers
         return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
       }
     }
-
 
 
     [HttpGet("imagenologia")]
