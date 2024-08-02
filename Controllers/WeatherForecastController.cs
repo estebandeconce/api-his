@@ -89,14 +89,64 @@ namespace HIS_API.Controllers
           db.SaveChanges();
 
           // (4) Llenar HIS_Examen_Solicitud
-          foreach (var examenId in request.ExamenIds)
+          foreach (var examen in request.Examenes)
           {
             var nuevoExamenSolicitud = new HisExamenSolicitud
             {
-              ExamSolExamenId = examenId,
+              ExamSolExamenId = examen.Id,
               ExamSolSolicitudId = solicitudId
             };
             db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
+            db.SaveChanges();
+
+            // Manejar contraste
+            if (examen.Contraste == "Sin contraste")
+            {
+              var nuevoContrasteExamen = new HisContrasteExaman
+              {
+                ContrasExamExamSolId = solicitudId,
+                ContrasExamContrasteId = 2
+              };
+              db.HisContrasteExamen.Add(nuevoContrasteExamen);
+            }
+            else if (examen.Contraste == "Con contraste")
+            {
+              var nuevoContrasteExamen = new HisContrasteExaman
+              {
+                ContrasExamExamSolId = solicitudId,
+                ContrasExamContrasteId = 3
+              };
+              db.HisContrasteExamen.Add(nuevoContrasteExamen);
+            }
+
+            // Manejar lateralidad
+            if (examen.Lateralidad == "IZQ.")
+            {
+              var nuevaLateralidadExamen = new HisExamenLateralidad
+              {
+                ExamLatExamSolId = solicitudId,
+                ExamLatLateralidadId = 3
+              };
+              db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
+            }
+            else if (examen.Lateralidad == "DER.")
+            {
+              var nuevaLateralidadExamen = new HisExamenLateralidad
+              {
+                ExamLatExamSolId = solicitudId,
+                ExamLatLateralidadId = 4
+              };
+              db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
+            }
+            else if (examen.Lateralidad == "BILAT.")
+            {
+              var nuevaLateralidadExamen = new HisExamenLateralidad
+              {
+                ExamLatExamSolId = solicitudId,
+                ExamLatLateralidadId = 5
+              };
+              db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
+            }
           }
           db.SaveChanges();
 
