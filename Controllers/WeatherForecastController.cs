@@ -77,7 +77,6 @@ namespace HIS_API.Controllers
             FundamentoSolicitudId = solicitudId
           };
           db.HisFundamentos.Add(nuevoFundamento);
-          db.SaveChanges();
 
           // (3) Llenar HIS_Diagnostico
           var nuevoDiagnostico = new HisDiagnostico
@@ -86,7 +85,6 @@ namespace HIS_API.Controllers
             DiagnosticoSolicitudId = solicitudId
           };
           db.HisDiagnosticos.Add(nuevoDiagnostico);
-          db.SaveChanges();
 
           // (4) Llenar HIS_Examen_Solicitud
           foreach (var examen in request.Examenes)
@@ -99,12 +97,15 @@ namespace HIS_API.Controllers
             db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
             db.SaveChanges();
 
+            // Obtener el ID del examen-solicitud recién creado
+            int examenSolicitudId = nuevoExamenSolicitud.ExamSolId;
+
             // Manejar contraste
             if (examen.Contraste == "Sin contraste")
             {
               var nuevoContrasteExamen = new HisContrasteExaman
               {
-                ContrasExamExamSolId = solicitudId,
+                ContrasExamExamSolId = examenSolicitudId,
                 ContrasExamContrasteId = 2
               };
               db.HisContrasteExamen.Add(nuevoContrasteExamen);
@@ -113,7 +114,7 @@ namespace HIS_API.Controllers
             {
               var nuevoContrasteExamen = new HisContrasteExaman
               {
-                ContrasExamExamSolId = solicitudId,
+                ContrasExamExamSolId = examenSolicitudId,
                 ContrasExamContrasteId = 3
               };
               db.HisContrasteExamen.Add(nuevoContrasteExamen);
@@ -124,7 +125,7 @@ namespace HIS_API.Controllers
             {
               var nuevaLateralidadExamen = new HisExamenLateralidad
               {
-                ExamLatExamSolId = solicitudId,
+                ExamLatExamSolId = examenSolicitudId,
                 ExamLatLateralidadId = 3
               };
               db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
@@ -133,7 +134,7 @@ namespace HIS_API.Controllers
             {
               var nuevaLateralidadExamen = new HisExamenLateralidad
               {
-                ExamLatExamSolId = solicitudId,
+                ExamLatExamSolId = examenSolicitudId,
                 ExamLatLateralidadId = 4
               };
               db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
@@ -142,7 +143,7 @@ namespace HIS_API.Controllers
             {
               var nuevaLateralidadExamen = new HisExamenLateralidad
               {
-                ExamLatExamSolId = solicitudId,
+                ExamLatExamSolId = examenSolicitudId,
                 ExamLatLateralidadId = 5
               };
               db.HisExamenLateralidads.Add(nuevaLateralidadExamen);
@@ -160,6 +161,7 @@ namespace HIS_API.Controllers
         return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
       }
     }
+
 
 
     [HttpGet("imagenologia")]
@@ -186,7 +188,7 @@ namespace HIS_API.Controllers
           }
 
           // Ejecutar la consulta SQL y verificar si se obtienen resultados
-          var arrayExamenes = db.ExamenView.FromSqlRaw("SELECT * FROM ExamenView").ToList();
+          var arrayExamenes = db.ExamenView2.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
 
           if (!arrayExamenes.Any())
           {
@@ -219,7 +221,7 @@ namespace HIS_API.Controllers
               foreach (var item2 in item.ToList())
               {
                 var result = db.HisConfiguracionExamen.Include(c => c.ConfigExamConfiguracion).Where(c => c.ConfigExamExamenId == item2.ExamenId).ToList();
-                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId)); // Manejo de posible referencia nula
+                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa)); // Manejo de posible referencia nula
               }
 
 
@@ -243,25 +245,28 @@ namespace HIS_API.Controllers
       }
     }
 
-    private static string GetBtnHtml3(List<Valor> Valor, List<HisConfiguracionExaman> CXE, string examenNombre, int examenId)
+    private static string GetBtnHtml3(List<Valor> Valor, List<HisConfiguracionExaman> CXE, string examenNombre, int examenId, string codigoFonasa)
     {
       //if CXE is empty se renderiza un btn sin configuración
       int numConfiguracionesXExamen = CXE.Count;
       string Btn;
 
+      
+      // (1) SIN CONTRASTE && SIN LATERALIDAD
       if (numConfiguracionesXExamen == 0)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica'>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
           </div>";
         return Btn;
       }
 
+      // (2) CON CONTRASTE && CON LATERALIDAD
       else if (numConfiguracionesXExamen == 2)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
@@ -274,20 +279,48 @@ namespace HIS_API.Controllers
         return Btn;
       }
 
+      // (3) CON CONTRASTE && SIN LATERALIDAD
       else if (CXE[0].ConfigExamConfiguracion.ConfiguracionNombre == "contraste")
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
           </div>";
         return Btn;
       }
 
+      // (4) SIN CONTRASTE && CON BILATERALIDAD OBLIGATORIA
+      else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 5)
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}'>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <select class='examen-lateralidad'>
+              <option value='Sin definir' disabled selected hidden>LAT.</option>
+              <option value='BILAT.'>BILAT.</option>
+            </select>
+          </div>";
+        return Btn;
+      }
+
+      // (5) CON CONTRASTE OBLIGATORIO && SIN LATERALIDAD
+      //**********************************
+      //**********************************
+      else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 3)
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='Con contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          </div>";
+        return Btn;
+      }
+
+      // (6) SIN CONTRASTE && CON LATERALIDAD
       else
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir'>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}'>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
