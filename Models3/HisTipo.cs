@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HIS_API.Models2;
+namespace HIS_API.Models3;
 
-public partial class HisTipoExaman
+public partial class HisTipo
 {
-    public int Id { get; set; }
+    public int TipoId { get; set; }
 
-    public string Nombre { get; set; } = null!;
+    public string? TipoNombre { get; set; }
 
     public virtual ICollection<HisExaman> HisExamen { get; set; } = new List<HisExaman>();
 }

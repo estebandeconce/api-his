@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HIS_API.Models2;
+namespace HIS_API.Models3;
 
 public partial class HisRegion
 {
-    public int Id { get; set; }
+    public int RegionId { get; set; }
 
-    public string Nombre { get; set; } = null!;
+    public string RegionNombre { get; set; } = null!;
 
-    public string? RutaIcono { get; set; }
+    public string? RegionRutaIcono { get; set; }
 
     public virtual ICollection<HisExaman> HisExamen { get; set; } = new List<HisExaman>();
 }

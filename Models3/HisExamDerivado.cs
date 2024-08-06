@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HIS_API.Models;
+namespace HIS_API.Models3;
 
 public partial class HisExamDerivado
 {

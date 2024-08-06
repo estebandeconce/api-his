@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HIS_API.Models2;
+namespace HIS_API.Models3;
 
 public partial class ExamenView
 {
     public int ExamenId { get; set; }
 
-    public string? CodigoFonasa { get; set; }
+    public string? ExamenCodigoFonasa { get; set; }
 
-    public string ExamenNombre { get; set; } = null!;
+    public string? ExamenNombre { get; set; }
 
     public int RegionId { get; set; }
 
     public string RegionNombre { get; set; } = null!;
 
-    public int TipoExId { get; set; }
+    public int TipoId { get; set; }
 
-    public string TipoExNombre { get; set; } = null!;
+    public string? TipoNombre { get; set; }
 }
