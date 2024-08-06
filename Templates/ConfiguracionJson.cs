@@ -1,4 +1,4 @@
-﻿using HIS_API.Models;
+﻿using HIS_API.Models3;
 
 namespace HIS_API.Templates
 {
