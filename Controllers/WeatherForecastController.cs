@@ -184,7 +184,7 @@ namespace HIS_API.Controllers
 
           if (!valores.Any())
           {
-            throw new Exception("No se encontraron valores en la tabla HisValors.");
+            throw new Exception("No se encontraron valores en la tabla HIS_VALOR.");
           }
 
           // Ejecutar la consulta SQL y verificar si se obtienen resultados
@@ -224,7 +224,6 @@ namespace HIS_API.Controllers
                 arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa)); // Manejo de posible referencia nula
               }
 
-
               region.Btn = arrayExamenes2;
             }
             tipoExamen.Regiones = arrayRegiones;
@@ -252,7 +251,7 @@ namespace HIS_API.Controllers
       string Btn;
 
       
-      // (1) SIN CONTRASTE && SIN LATERALIDAD
+      // (*) SIN CONTRASTE && SIN LATERALIDAD
       if (numConfiguracionesXExamen == 0)
       {
         Btn = $@"
@@ -262,7 +261,22 @@ namespace HIS_API.Controllers
         return Btn;
       }
 
-      // (2) CON CONTRASTE && CON LATERALIDAD
+      // (*) CON CONTRASTE && CON BILATERALIDAD OBLIGATORIA
+      else if (numConfiguracionesXExamen == 2 && CXE[0].ConfigExamValorPorDefecto == 5)
+      {
+        Btn = $@"
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}'>
+            <div class='examen-contraste' title='SIN Contraste'>SC</div>            
+            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <select class='examen-lateralidad'>
+              <option value='Sin definir' disabled selected hidden>LAT.</option>
+              <option value='BILAT.'>BILAT.</option>
+            </select>
+          </div>";
+        return Btn;
+      }
+
+      // (*) CON CONTRASTE && CON LATERALIDAD
       else if (numConfiguracionesXExamen == 2)
       {
         Btn = $@"
@@ -279,7 +293,7 @@ namespace HIS_API.Controllers
         return Btn;
       }
 
-      // (3) CON CONTRASTE && SIN LATERALIDAD
+      // (*) CON CONTRASTE && SIN LATERALIDAD
       else if (CXE[0].ConfigExamConfiguracion.ConfiguracionNombre == "contraste")
       {
         Btn = $@"
@@ -290,7 +304,22 @@ namespace HIS_API.Controllers
         return Btn;
       }
 
-      // (4) SIN CONTRASTE && CON BILATERALIDAD OBLIGATORIA
+
+
+      // (*) CON CONTRASTE OBLIGATORIO && SIN LATERALIDAD
+      //**********************************
+      //**********************************
+      //else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 3)
+      //{
+      //  Btn = $@"
+      //    <div class='examen-container' id='{examenId}' data-contraste='Con contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
+      //      <div class='examen-contraste activo' title='CON Contraste'>CC</div>
+      //      <div class='examen-nombre Radiografía'>{examenNombre}</div>
+      //    </div>";
+      //  return Btn;
+      //}
+
+      // (*) SIN CONTRASTE && CON BILATERALIDAD OBLIGATORIA
       else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 5)
       {
         Btn = $@"
@@ -304,19 +333,7 @@ namespace HIS_API.Controllers
         return Btn;
       }
 
-      // (5) CON CONTRASTE OBLIGATORIO && SIN LATERALIDAD
-      //**********************************
-      //**********************************
-      else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 3)
-      {
-        Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Con contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
-          </div>";
-        return Btn;
-      }
-
-      // (6) SIN CONTRASTE && CON LATERALIDAD
+      // (*) SIN CONTRASTE && CON LATERALIDAD
       else
       {
         Btn = $@"
