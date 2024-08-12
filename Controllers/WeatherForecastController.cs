@@ -23,6 +23,86 @@ namespace HIS_API.Controllers
   public class WeatherForecastController : ControllerBase
   {
 
+    [HttpGet("imagenologia")]
+    public RenderBtn Imagenologia()
+    {
+      try
+      {
+        var valores = new List<Valor>();
+        var arrayTipoExamen = new List<TipoExamenBtn>();
+
+        using (var db = new DbHis2Context())
+        {
+          // Verificar si se obtienen valores
+          valores = db.HisValors.Select(v => new Valor()
+          {
+            configuracion = v.ValorConfiguracionId ?? 0,
+            id = v.ValorId,
+            nombre = v.ValorNombre ?? string.Empty // Manejo de posible referencia nula
+          }).ToList();
+
+          if (!valores.Any())
+          {
+            throw new Exception("No se encontraron valores en la tabla HIS_VALOR.");
+          }
+
+          // Ejecutar la consulta SQL y verificar si se obtienen resultados
+          var arrayExamenes = db.ExamenView2s.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
+
+          if (!arrayExamenes.Any())
+          {
+            throw new Exception("No se encontraron exámenes visibles.");
+          }
+
+          var groupedExamenes = arrayExamenes.GroupBy(tipoExamen => tipoExamen.TipoNombre).ToList();
+
+          foreach (var items in groupedExamenes)
+          {
+            var tipoExamen = new TipoExamenBtn
+            {
+              NombreUnidad = items.Key ?? string.Empty // Manejo de posible referencia nula
+            };
+            var arrayRegiones = new List<RegionBtn>();
+
+            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
+            {
+              var region = new RegionBtn
+              {
+                NombreRegion = item.Key ?? string.Empty // Manejo de posible referencia nula
+              };
+
+              var regionInfo = db.HisRegions.FirstOrDefault(r => r.RegionNombre == item.Key);
+              region.RutaIcono = regionInfo?.RegionRutaIcono ?? string.Empty; // Manejo de posible referencia nula
+
+              arrayRegiones.Add(region);
+              var arrayExamenes2 = new List<string>();
+
+              foreach (var item2 in item.ToList())
+              {
+                var result = db.HisConfiguracionExamen.Include(c => c.ConfigExamConfiguracion).Where(c => c.ConfigExamExamenId == item2.ExamenId).ToList();
+                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa)); // Manejo de posible referencia nula
+              }
+
+              region.Btn = arrayExamenes2;
+            }
+            tipoExamen.Regiones = arrayRegiones;
+            arrayTipoExamen.Add(tipoExamen);
+          }
+        }
+
+        return new RenderBtn()
+        {
+          Examenes = arrayTipoExamen,
+        };
+      }
+      catch (Exception ex)
+      {
+        // Log the exception (optional)
+        Console.WriteLine(ex.Message);
+        return new RenderBtn(); // Devolver un objeto RenderBtn vacío en lugar de null
+      }
+    }
+
     [HttpPost("solicitarExamen")]
     public IActionResult SolicitarExamen([FromBody] SolicitudRequest request)
     {
@@ -169,83 +249,61 @@ namespace HIS_API.Controllers
       }
     }
 
-    [HttpGet("imagenologia")]
-    public RenderBtn Imagenologia()
+    [HttpPost("SolicitarExamenLaboratorio")]
+    public IActionResult SolicitarExamenLaboratorio([FromBody] SolicitudRequest request)
     {
       try
       {
-        var valores = new List<Valor>();
-        var arrayTipoExamen = new List<TipoExamenBtn>();
-
         using (var db = new DbHis2Context())
         {
-          // Verificar si se obtienen valores
-          valores = db.HisValors.Select(v => new Valor()
+          var nuevaSolicitud = new HisSolicitud
           {
-            configuracion = v.ValorConfiguracionId ?? 0,
-            id = v.ValorId,
-            nombre = v.ValorNombre ?? string.Empty // Manejo de posible referencia nula
-          }).ToList();
+            SolicitudCodigoPaciente = request.SolicitudCodigoPaciente,
+            SolicitudCuentaCorriente = request.SolicitudCuentaCorriente,
+            SolicitudFecha = DateTime.Now
+          };
+          db.HisSolicituds.Add(nuevaSolicitud);
+          db.SaveChanges();
 
-          if (!valores.Any())
+          int solicitudId = nuevaSolicitud.SolicitudId;
+
+          var nuevoFundamento = new HisFundamento
           {
-            throw new Exception("No se encontraron valores en la tabla HIS_VALOR.");
-          }
+            FundamentoDescripcion = request.FundamentoDescripcion,
+            FundamentoSolicitudId = solicitudId
+          };
+          db.HisFundamentos.Add(nuevoFundamento);
 
-          // Ejecutar la consulta SQL y verificar si se obtienen resultados
-          var arrayExamenes = db.ExamenView2s.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
-
-          if (!arrayExamenes.Any())
+          var nuevoDiagnostico = new HisDiagnostico
           {
-            throw new Exception("No se encontraron exámenes visibles.");
-          }
+            DiagnosticoDescripcion = request.DiagnosticoDescripcion,
+            DiagnosticoSolicitudId = solicitudId
+          };
+          db.HisDiagnosticos.Add(nuevoDiagnostico);
 
-          var groupedExamenes = arrayExamenes.GroupBy(tipoExamen => tipoExamen.TipoNombre).ToList();
-
-          foreach (var items in groupedExamenes)
+          foreach (var examen in request.Examenes)
           {
-            var tipoExamen = new TipoExamenBtn
+            var nuevoExamenSolicitud = new HisExamenSolicitud
             {
-              NombreUnidad = items.Key ?? string.Empty // Manejo de posible referencia nula
+              ExamSolExamenId = examen.Id,
+              ExamSolSolicitudId = solicitudId
             };
-            var arrayRegiones = new List<RegionBtn>();
+            db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
+            db.SaveChanges();
 
-            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
-            {
-              var region = new RegionBtn
-              {
-                NombreRegion = item.Key ?? string.Empty // Manejo de posible referencia nula
-              };
-
-              var regionInfo = db.HisRegions.FirstOrDefault(r => r.RegionNombre == item.Key);
-              region.RutaIcono = regionInfo?.RegionRutaIcono ?? string.Empty; // Manejo de posible referencia nula
-
-              arrayRegiones.Add(region);
-              var arrayExamenes2 = new List<string>();
-
-              foreach (var item2 in item.ToList())
-              {
-                var result = db.HisConfiguracionExamen.Include(c => c.ConfigExamConfiguracion).Where(c => c.ConfigExamExamenId == item2.ExamenId).ToList();
-                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa)); // Manejo de posible referencia nula
-              }
-
-              region.Btn = arrayExamenes2;
-            }
-            tipoExamen.Regiones = arrayRegiones;
-            arrayTipoExamen.Add(tipoExamen);
+            // Obtener el ID del examen-solicitud recién creado
+            int examenSolicitudId = nuevoExamenSolicitud.ExamSolId;
           }
-        }
+          db.SaveChanges();
 
-        return new RenderBtn()
-        {
-          Examenes = arrayTipoExamen,
-        };
+          // Devolver el ID de la solicitud recién creada
+          return Ok(solicitudId);
+        }
       }
       catch (Exception ex)
       {
-        // Log the exception (optional)
-        Console.WriteLine(ex.Message);
-        return new RenderBtn(); // Devolver un objeto RenderBtn vacío en lugar de null
+        // Manejo de errores
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
       }
     }
 
