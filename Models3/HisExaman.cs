@@ -13,11 +13,11 @@ public partial class HisExaman
 
     public bool? ExamenEsVisible { get; set; }
 
-    public int ExamenRegionId { get; set; }
+    public int? ExamenRegionId { get; set; }
 
     public int ExamenTipoId { get; set; }
 
-    public virtual HisRegion ExamenRegion { get; set; } = null!;
+    public virtual HisRegion? ExamenRegion { get; set; }
 
     public virtual HisTipo ExamenTipo { get; set; } = null!;
 

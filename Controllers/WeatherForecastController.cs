@@ -1,5 +1,3 @@
-//using HIS_API.Models;
-//using HIS_API.Models2;
 using HIS_API.Models3;
 using HIS_API.Templates;
 using Microsoft.AspNetCore.Authorization;
@@ -12,43 +10,18 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-//using HIS_API.Models;
 
-namespace HIS_API.Controllers
 //Data Source=10.5.214.129;Initial Catalog=DB_HIS;Persist Security Info=True;User ID=TIC;Password=Tic***H$p;Encrypt=True;Trust Server Certificate=True
 //Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models2 -Force
 //Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS2;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models3
-{
 
+namespace HIS_API.Controllers
+{
   [ApiController]
   [Route("[controller]")]
   [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
   public class WeatherForecastController : ControllerBase
   {
-    //[HttpPost("post1")]
-    //public IActionResult F1([FromBody] TipoExamenRequest request)
-    //{
-    //  try
-    //  {
-    //    using (var db = new DbHisContext())
-    //    {
-    //      var nuevoTipoExamen = new HisTipoExaman
-    //      {
-    //        Nombre = request.NombreAdicional
-    //      };
-
-    //      db.HisTipoExamen.Add(nuevoTipoExamen);
-    //      db.SaveChanges();
-    //    }
-
-    //    return Ok(new { message = $"Tipo de examen '{request.NombreAdicional}' agregado exitosamente." });
-    //  }
-    //  catch (Exception ex)
-    //  {
-    //    // Manejo de errores
-    //    return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
-    //  }
-    //}
 
     [HttpPost("solicitarExamen")]
     public IActionResult SolicitarExamen([FromBody] SolicitudRequest request)
@@ -162,7 +135,39 @@ namespace HIS_API.Controllers
       }
     }
 
+    [HttpGet("laboratorio")]
+    public IActionResult GetLaboratorio()
+    {
+      try
+      {
+        using var db = new DbHis2Context();
+        // (1) Hacer la consulta
+        var examenes = db.LaboratorioGetViews
+            .FromSqlRaw("SELECT * FROM LaboratorioGetView ORDER BY Tipo_nombre ASC, Examen_nombre ASC")
+            .ToList();
 
+        // (2) Agrupar los exámenes por tipo
+        var groupedExamenes = examenes
+            .GroupBy(e => e.TipoNombre)
+            .Select(g => new
+            {
+              Tipo = new
+              {
+                Nombre = g.Key,
+                Btn = g.Select(e => GetBtnHtmlLaboratorio(e.ExamenNombre, e.ExamenId)).ToList()
+              }
+            })
+            .ToList();
+
+        // (3) Devolver un JSON
+        return Ok(groupedExamenes);
+      }
+      catch (Exception ex)
+      {
+        // Manejo de errores
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+      }
+    }
 
     [HttpGet("imagenologia")]
     public RenderBtn Imagenologia()
@@ -188,7 +193,7 @@ namespace HIS_API.Controllers
           }
 
           // Ejecutar la consulta SQL y verificar si se obtienen resultados
-          var arrayExamenes = db.ExamenView2.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
+          var arrayExamenes = db.ExamenView2s.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
 
           if (!arrayExamenes.Any())
           {
@@ -244,13 +249,29 @@ namespace HIS_API.Controllers
       }
     }
 
+    private static string GetBtnHtmlLaboratorio(string examenNombre, int examenId)
+    {
+      string Btn = $@"
+          <div class='examen-container' id='id{examenId}'>
+            <div class='examen-nombre'>{examenNombre}</div>
+          </div>";
+      return SanitizeHtml(Btn);
+    }
+
+    private static string SanitizeHtml(string html)
+    {
+      return html.Replace("\r\n", "").Replace("  ", "").Trim();
+    }
+
+
+    //Agregar el tipo de examen para que tenga su propio color
     private static string GetBtnHtml3(List<Valor> Valor, List<HisConfiguracionExaman> CXE, string examenNombre, int examenId, string codigoFonasa)
     {
       //if CXE is empty se renderiza un btn sin configuración
       int numConfiguracionesXExamen = CXE.Count;
       string Btn;
 
-      
+
       // (*) SIN CONTRASTE && SIN LATERALIDAD
       if (numConfiguracionesXExamen == 0)
       {
