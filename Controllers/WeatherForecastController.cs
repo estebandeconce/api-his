@@ -1,18 +1,9 @@
 using HIS_API.Models3;
 using HIS_API.Templates;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
-//using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text.Json.Nodes;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-
 //Data Source=10.5.214.129;Initial Catalog=DB_HIS;Persist Security Info=True;User ID=TIC;Password=Tic***H$p;Encrypt=True;Trust Server Certificate=True
-//Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models2 -Force
 //Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS2;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models3
 
 namespace HIS_API.Controllers
@@ -234,7 +225,8 @@ namespace HIS_API.Controllers
               Tipo = new
               {
                 Nombre = g.Key,
-                Btn = g.Select(e => GetBtnHtmlLaboratorio(e.ExamenNombre, e.ExamenId)).ToList()
+                RutaIcono = db.HisTipos.FirstOrDefault(t => t.TipoNombre == g.Key)?.TipoRutaIcono ?? string.Empty, // Obtener la ruta del icono
+                Btn = g.Select(e => GetBtnHtmlLaboratorio(e.ExamenNombre, e.ExamenId, e.TipoNombre)).ToList()
               }
             })
             .ToList();
@@ -307,10 +299,10 @@ namespace HIS_API.Controllers
       }
     }
 
-    private static string GetBtnHtmlLaboratorio(string examenNombre, int examenId)
+    private static string GetBtnHtmlLaboratorio(string examenNombre, int examenId, string tipoNombre)
     {
       string Btn = $@"
-          <div class='examen-container' id='id{examenId}'>
+          <div class='examen-container' id='id{examenId}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-nombre'>{examenNombre}</div>
           </div>";
       return SanitizeHtml(Btn);

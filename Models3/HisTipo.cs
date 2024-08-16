@@ -9,5 +9,7 @@ public partial class HisTipo
 
     public string? TipoNombre { get; set; }
 
+    public string? TipoRutaIcono { get; set; }
+
     public virtual ICollection<HisExaman> HisExamen { get; set; } = new List<HisExaman>();
 }

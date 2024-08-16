@@ -368,6 +368,10 @@ public partial class DbHis2Context : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("Tipo_nombre");
+            entity.Property(e => e.TipoRutaIcono)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("Tipo_rutaIcono");
         });
 
         modelBuilder.Entity<HisValor>(entity =>
