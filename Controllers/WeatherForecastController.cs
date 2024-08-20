@@ -3,6 +3,7 @@ using HIS_API.Templates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
+using PuppeteerSharp;
 //Data Source=10.5.214.129;Initial Catalog=DB_HIS;Persist Security Info=True;User ID=TIC;Password=Tic***H$p;Encrypt=True;Trust Server Certificate=True
 //Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS2;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models3
 
@@ -13,6 +14,55 @@ namespace HIS_API.Controllers
   [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
   public class WeatherForecastController : ControllerBase
   {
+    [HttpGet("getPup")]
+    public async Task<IActionResult> GetPup()
+    {
+      try
+      {
+        using var db = new DbHis2Context();
+
+        var options = new LaunchOptions
+        {
+          Headless = true,
+        };
+
+        var browserFetcher = new BrowserFetcher();
+        await browserFetcher.DownloadAsync();
+
+        using var browser = await Puppeteer.LaunchAsync(options);
+        using var page = await browser.NewPageAsync();
+        using var memoryStream = new MemoryStream();
+
+        // Generar una URL completa
+        var url = Url.Action("Solicitud", "Reportes", null, Request.Scheme);
+
+        await page.GoToAsync(url);
+
+        var pdfStream = await page.PdfDataAsync();
+
+        return File(pdfStream, "application/pdf");
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+      }
+    }
+
+
+    [HttpPost("postPup")]
+    public async Task<IActionResult> PostPup()
+    {
+      try
+      {
+        using var db = new DbHis2Context();
+        return Ok();
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+      }
+    }
+
 
     [HttpGet("imagenologia")]
     public RenderBtn Imagenologia()

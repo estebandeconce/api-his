@@ -1,0 +1,11 @@
+﻿
+body {
+  /*Tamaño carta*/
+  height: 27.94cm;
+  padding: 3cm;
+  width: 21.59cm;
+}
+
+h1 {
+  color: red;
+}
