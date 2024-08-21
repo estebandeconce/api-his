@@ -1,11 +1,154 @@
-﻿
+﻿:root {
+  --color-amarillo: #B08B00;
+  --color-azul: #006aba;
+  --color-blanco: #FFFFFF;
+  --color-cafe: #5A4343;
+  --color-calipso: #00c19b;
+  --color-celeste: #1d96d7;
+  --color-durazno: #ff7172;
+  --color-gob-azul: #006fb3;
+  --color-gob-rojo: #ff3800;
+  --color-gris: #4D4D4D;
+  --color-gris2: #c1c1c1;
+  --color-naranja: #de5445;
+  --color-negro: #000000;
+  --color-rojo: #7B0000;
+  --color-rosado: #A75D6A;
+  --color-purpura: #a35ea9;
+  --color-verde: #6ea900;
+}
+
 body {
   /*Tamaño carta*/
+  border: var(--color-gris) 1px solid;
   height: 27.94cm;
   padding: 3cm;
   width: 21.59cm;
+  margin: 0;
+  /*Letras del gob. framework.digital.gob.cl/typography.html */
+  font-family: Roboto;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #212529;
 }
 
-h1 {
-  color: red;
+.titulo {
+  font-family: Roboto Slab;
+  font-size: 1.25rem;
+  font-weight: 400;
+  text-align: center
+}
+
+.icon-small {
+  height: 70px;
+}
+
+.icon-medium {
+  height: 124px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container {
+  margin-bottom: 24px;
+  display: flex;
+  border: var(--color-gris2) 1px solid;
+}
+
+.info {
+  border-left: var(--color-gris2) 1px solid; /* Aplica solo el borde derecho */
+  writing-mode: vertical-rl; /* Texto en vertical, de arriba a abajo */
+  transform: rotate(180deg); /* Rotar el texto 180 grados */
+  text-orientation: mixed; /* Asegura que las letras se orienten correctamente */
+  padding: 10px 5px;
+  text-align: center;
+}
+
+.data {
+  flex: 1; /* Permite que .data ocupe el espacio restante en .container */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Asegura que todas las filas tengan la misma altura */
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-bottom: var(--color-gris2) 1px solid;
+  flex-grow: 1; /* Asegura que todas las filas crezcan uniformemente */
+}
+
+  .row:last-child {
+    border-bottom: none; /* Elimina el borde inferior de la última fila */
+  }
+
+.column {
+  padding: 10px;
+  box-sizing: border-box; /* Incluye el padding en el ancho total */
+  flex-grow: 1; /* Asegura que todas las columnas crezcan uniformemente */
+}
+
+/* Clases de columnas del 1 al 12 */
+.col-1 {
+  width: 8.33%;
+}
+
+.col-1_5 {
+  width: 12.5%;
+}
+
+.col-2 {
+  width: 16.66%;
+}
+
+.col-3 {
+  width: 25%;
+}
+
+.col-4 {
+  width: 33.33%;
+}
+
+.col-5 {
+  width: 41.66%;
+}
+
+.col-6 {
+  width: 50%;
+}
+
+.col-7 {
+  width: 58.33%;
+}
+
+.col-8 {
+  width: 66.66%;
+}
+
+.col-9 {
+  width: 75%;
+}
+
+.col-10 {
+  width: 83.33%;
+}
+
+.col-11 {
+  width: 91.66%;
+}
+
+.col-12 {
+  width: 100%;
+}
+
+.col {
+  flex: 1;
+}
+
+.col-auto {
+  width: auto;
 }
