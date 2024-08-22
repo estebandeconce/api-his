@@ -1,4 +1,4 @@
-﻿@* Agregar modelos cuando corresponda *@
+﻿@model HIS_API.Models3.SolicitudPost
 
 <!DOCTYPE html>
 <html lang="es-cl">
@@ -9,33 +9,22 @@
   <link rel="stylesheet" href="@Url.Content("~/css/Solicitud.css")" />
 </head>
 <body>
-
   <div class="header">
     <img class="icon-small" src="/img/hsp_logo_coq2.png" alt="Alternate Text" />
     <div class="titulo"><b>Solicitud de Exámenes de<br />Laboratorio N° 100</b></div>
     <img class="icon-medium" src="/img/hps_logo_gob.jpg" alt="Alternate Text" />
   </div>
 
-  @* <div class="header container">
-  <div class="column col-4">
-  <img class="icon" src="/img/hsp_logo_coq.png" alt="Alternate Text" />
-  </div>
-  <div class="column col-4 titulo"><b>Solicitud de Exámenes de Laboratorio N° 100</b></div>
-  <div class="column col-4">
-  <img class="icon" src="/img/hps_logo_gob.jpg" alt="Alternate Text" />
-  </div>
-  </div> *@
-
   <div class="container">
     <div class="info">O R I G E N</div>
     <div class="data">
       <div class="row">
-        <div class="column col-6"><b>1.- Servicio de salud</b><br />Coquimbo</div>
-        <div class="column col-6"><b>2.- Establecimiento</b><br />Hospital San Pablo</div>
+        <div class="column col-6"><b>1.- Servicio de salud</b><br />@Model.ServicioDeSalud</div>
+        <div class="column col-6"><b>2.- Establecimiento</b><br />@Model.Establecimiento</div>
       </div>
       <div class="row">
-        <div class="column col-6"><b>3.- Unidad Solicitante</b><br />Cirugia</div>
-        <div class="column col-6"><b>4.- Fecha de Emisión</b><br />Jueves 7 de Agosto del 2024, 09:32</div>
+        <div class="column col-6"><b>3.- Unidad Solicitante</b><br />@Model.UnidadSolicitante</div>
+        <div class="column col-6"><b>4.- Fecha de Emisión</b><br />@Model.FechaDeEmision</div>
       </div>
     </div>
   </div>
@@ -44,26 +33,26 @@
     <div class="info">P A C I E N T E</div>
     <div class="data">
       <div class="row">
-        <div class="column col-6"><b>4.-Nombre</b><br />María José Andrea Angélica Morales Martínez Pérez</div>
-        <div class="column col-1_5"><b>5.-Ficha</b><br />123456789</div>
-        <div class="column col-1_5"><b>6.-C.P.</b><br />123456789</div>
-        <div class="column col-3"><b>7.-Cta. Corriente</b><br />7631035</div>
+        <div class="column col-6"><b>5.-Nombre</b><br />@Model.NombrePaciente</div>
+        <div class="column col-1_5"><b>6.-Ficha</b><br />@Model.Ficha</div>
+        <div class="column col-1_5"><b>7.-C.P.</b><br />@Model.CP</div>
+        <div class="column col-3"><b>8.-Cta. Corriente</b><br />@Model.CtaCorriente</div>
       </div>
       <div class="row">
-        <div class="column col-3"><b>8.-RUN</b><br />28.489.495-4</div>
-        <div class="column col-3"><b>9.-Sexo</b><br />Hombre</div>
-        <div class="column col-3"><b>10.-Fecha de Nacimiento</b><br />18/07/2024</div>
-        <div class="column col-3"><b>11.-Edad</b><br />18 años y 3 meses</div>
+        <div class="column col-3"><b>9.-RUN</b><br />@Model.RUNPaciente</div>
+        <div class="column col-3"><b>10.-Sexo</b><br />@Model.Sexo</div>
+        <div class="column col-3"><b>11.-Fecha de Nacimiento</b><br />@Model.FechaDeNacimiento</div>
+        <div class="column col-3"><b>12.-Edad</b><br />Edad</div>
       </div>
       <div class="row">
-        <div class="column col-6"><b>12.-Dirección</b><br />PSJE JORGE 2173</div>
-        <div class="column col-6"><b>13.-Ciudad o Comuna</b><br />Coquimbo</div>
+        <div class="column col-6"><b>13.-Dirección</b><br />@Model.Direccion</div>
+        <div class="column col-6"><b>14.-Ciudad o Comuna</b><br />@Model.Comuna</div>
       </div>
       <div class="row">
-        <div class="column col"><b>14.-Teléfonos</b><br />+569 735 286 04</div>
+        <div class="column col"><b>15.-Teléfonos</b><br />@Model.Telefono</div>
       </div>
       <div class="row">
-        <div class="column col"><b>15.-Diagnóstico</b><br />Infarto</div>
+        <div class="column col"><b>16.-Diagnóstico</b><br />@Model.Diagnostico</div>
       </div>
     </div>
   </div>
@@ -72,7 +61,7 @@
     <div class="info">E X Á M E N E S</div>
     <div class="data">
       <div class="row">
-        <div class="column col"><b>16.-Solicitud</b></div>
+        <div class="column col"><b>17.-Solicitud</b></div>
       </div>
     </div>
   </div>
@@ -81,9 +70,9 @@
     <div class="info">P R O F.</div>
     <div class="data">
       <div class="row">
-        <div class="column col-4"><b>17.-Nombre</b><br />Gregory House</div>
-        <div class="column col-4"><b>18.-RUN</b><br />12.345.678-9</div>
-        <div class="column col-4"><b>19.-Firma</b></div>
+        <div class="column col-4"><b>18.-Nombre</b><br />@Model.NombreProfesional</div>
+        <div class="column col-4"><b>19.-RUN</b><br />@Model.RUNProfesional</div>
+        <div class="column col-4"><b>20.-Firma</b></div>
       </div>
     </div>
   </div>

@@ -50,19 +50,35 @@ namespace HIS_API.Controllers
 
 
     [HttpPost("postPup")]
-    public async Task<IActionResult> PostPup()
+    public async Task<IActionResult> PostPup([FromBody] SolicitudPost solicitudPost)
     {
       try
       {
-        using var db = new DbHis2Context();
-        return Ok();
+        var options = new LaunchOptions
+        {
+          Headless = true,
+        };
+
+        var browserFetcher = new BrowserFetcher();
+        await browserFetcher.DownloadAsync();
+
+        using var browser = await Puppeteer.LaunchAsync(options);
+        using var page = await browser.NewPageAsync();
+
+        // Generar una URL completa con los datos de la solicitud
+        var url = Url.Action("Solicitud", "Reportes", solicitudPost, Request.Scheme);
+
+        await page.GoToAsync(url);
+
+        var pdfStream = await page.PdfDataAsync();
+
+        return File(pdfStream, "application/pdf");
       }
       catch (Exception ex)
       {
         return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
       }
     }
-
 
     [HttpGet("imagenologia")]
     public RenderBtn Imagenologia()
