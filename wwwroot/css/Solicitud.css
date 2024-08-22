@@ -20,7 +20,7 @@
 
 body {
   /*Tamaño carta*/
-  border: var(--color-gris) 1px solid;
+  /*border: var(--color-gris) 1px solid;*/
   height: 27.94cm;
   padding: 3cm;
   width: 21.59cm;
@@ -34,13 +34,13 @@ body {
 
 .titulo {
   font-family: Roboto Slab;
-  font-size: 1.25rem;
+  font-size: 1.4375rem;
   font-weight: 400;
   text-align: center
 }
 
 .icon-small {
-  height: 70px;
+  height: 57px;
 }
 
 .icon-medium {
@@ -50,6 +50,7 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 24px;
 }
 
 .container {
