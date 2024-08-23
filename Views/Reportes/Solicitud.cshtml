@@ -41,8 +41,8 @@
       <div class="row">
         <div class="column col-3"><b>9.-RUN</b><br />@Model.RUNPaciente</div>
         <div class="column col-3"><b>10.-Sexo</b><br />@Model.Sexo</div>
-        <div class="column col-3"><b>11.-Fecha de Nacimiento</b><br />@Model.FechaDeNacimiento</div>
-        <div class="column col-3"><b>12.-Edad</b><br />Edad</div>
+        <div class="column col-3"><b>11.-Fecha de Nacimiento</b><br />@Model.FechaDeNacimiento.ToString("dd/MM/yyyy")</div>
+        <div class="column col-3"><b>12.-Edad</b><br />@Model.EdadString</div>
       </div>
       <div class="row">
         <div class="column col-6"><b>13.-Dirección</b><br />@Model.Direccion</div>
@@ -61,7 +61,22 @@
     <div class="info">E X Á M E N E S</div>
     <div class="data">
       <div class="row">
-        <div class="column col"><b>17.-Solicitud</b></div>
+        <div class="column col">
+          <b>17.-Solicitud</b><br />
+          <ul>
+            @if (Model.Examenes2 != null && Model.Examenes2.Count > 0)
+            {
+              @foreach (var examen in Model.Examenes2)
+              {
+                <li>@examen.NombreExamen</li>
+              }
+            }
+            else
+            {
+              <li>No hay exámenes solicitados.</li>
+            }
+          </ul>
+        </div>
       </div>
     </div>
   </div>

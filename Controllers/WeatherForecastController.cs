@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
 using PuppeteerSharp;
+using System.Text.Json;
 //Data Source=10.5.214.129;Initial Catalog=DB_HIS;Persist Security Info=True;User ID=TIC;Password=Tic***H$p;Encrypt=True;Trust Server Certificate=True
 //Scaffold-DbContext "SERVER=10.5.214.129;DATABASE=DB_HIS2;USER ID=rene;PASSWORD=1779;TRUSTED_CONNECTION=false;TRUSTSERVERCERTIFICATE=true;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models3
 
@@ -54,6 +55,7 @@ namespace HIS_API.Controllers
     {
       try
       {
+
         var options = new LaunchOptions
         {
           Headless = true,
@@ -66,13 +68,13 @@ namespace HIS_API.Controllers
         using var page = await browser.NewPageAsync();
 
         // Generar una URL completa con los datos de la solicitud
-        var url = Url.Action("Solicitud", "Reportes", solicitudPost, Request.Scheme);
+        var url = Url.Action("Solicitud", "Reportes", new {model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
 
         await page.GoToAsync(url);
-
+        //Acá vuelve después de pasar por ReportesController
         var pdfStream = await page.PdfDataAsync();
 
-        return File(pdfStream, "application/pdf");
+        return File(pdfStream, "application/pdf", "miReporte.pdf");
       }
       catch (Exception ex)
       {
