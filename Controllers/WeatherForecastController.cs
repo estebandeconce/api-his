@@ -15,43 +15,9 @@ namespace HIS_API.Controllers
   [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
   public class WeatherForecastController : ControllerBase
   {
-    [HttpGet("getPup")]
-    public async Task<IActionResult> GetPup()
-    {
-      try
-      {
-        using var db = new DbHis2Context();
-
-        var options = new LaunchOptions
-        {
-          Headless = true,
-        };
-
-        var browserFetcher = new BrowserFetcher();
-        await browserFetcher.DownloadAsync();
-
-        using var browser = await Puppeteer.LaunchAsync(options);
-        using var page = await browser.NewPageAsync();
-        using var memoryStream = new MemoryStream();
-
-        // Generar una URL completa
-        var url = Url.Action("Solicitud", "Reportes", null, Request.Scheme);
-
-        await page.GoToAsync(url);
-
-        var pdfStream = await page.PdfDataAsync();
-
-        return File(pdfStream, "application/pdf");
-      }
-      catch (Exception ex)
-      {
-        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
-      }
-    }
-
-
-    [HttpPost("postPup")]
-    public async Task<IActionResult> PostPup([FromBody] SolicitudPost solicitudPost)
+    
+    [HttpPost("SolExamenLaboratorio")]
+    public async Task<IActionResult> SolExamenLaboratorio([FromBody] SolicitudPost solicitudPost)
     {
       try
       {
@@ -68,7 +34,7 @@ namespace HIS_API.Controllers
         using var page = await browser.NewPageAsync();
 
         // Generar una URL completa con los datos de la solicitud
-        var url = Url.Action("Solicitud", "Reportes", new {model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
+        var url = Url.Action("Solicitud", "Reportes", new { model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
 
         await page.GoToAsync(url);
         //Acá vuelve después de pasar por ReportesController

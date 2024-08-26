@@ -39,7 +39,7 @@ app.MapControllers();
 //controller va sin home en el ejemplo de internet
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action}"
+    pattern: "{controller}/{action}"
   );
 
 app.Run();

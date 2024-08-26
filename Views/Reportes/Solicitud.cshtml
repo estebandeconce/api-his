@@ -19,7 +19,7 @@
     <div class="info">O R I G E N</div>
     <div class="data">
       <div class="row">
-        <div class="column col-6"><b>1.- Servicio de salud</b><br />@Model.ServicioDeSalud</div>
+        <div class="column col-6"><b>1.- Servicio de Salud</b><br />@Model.ServicioDeSalud</div>
         <div class="column col-6"><b>2.- Establecimiento</b><br />@Model.Establecimiento</div>
       </div>
       <div class="row">
@@ -66,9 +66,17 @@
           <ul>
             @if (Model.Examenes2 != null && Model.Examenes2.Count > 0)
             {
-              @foreach (var examen in Model.Examenes2)
+              var examenesAgrupados = Model.Examenes2
+              .GroupBy(e => e.TipoExamen)
+              .OrderBy(g => g.Key);
+
+              foreach (var grupo in examenesAgrupados)
               {
-                <li>@examen.NombreExamen</li>
+                <li><b>@grupo.Key</b></li>
+                foreach (var examen in grupo.OrderBy(e => e.NombreExamen))
+                {
+                  <li style="margin-left: 20px;">@examen.NombreExamen</li>
+                }
               }
             }
             else
