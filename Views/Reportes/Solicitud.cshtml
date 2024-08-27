@@ -59,7 +59,14 @@
         <div class="column col-3"><b>@(itemNumber++) .-Teléfonos</b><br />@Model.Telefono</div>
       </div>
       <div class="row">
-        <div class="column col"><b>@(itemNumber++) .-Diagnóstico</b><br />@Model.Diagnostico</div>
+        @if (Model.Origen == "IMAGENOLOGIA")
+        {
+          <div class="column col"><b>@(itemNumber++) .-Fundamento</b><br />@Model.Fundamento</div>
+        }
+        else
+        {
+          <div class="column col"><b>@(itemNumber++) .-Diagnóstico</b><br />@Model.Diagnostico</div>
+        }
       </div>
     </div>
   </div>
@@ -71,18 +78,18 @@
         <div class="column col">
           <b>@(itemNumber++) .-Solicitud</b><br />
           <ul>
-            @if (Model.Examenes2 != null && Model.Examenes2.Count > 0)
+            @if (Model.Examenes != null && Model.Examenes.Count > 0)
             {
-              var examenesAgrupados = Model.Examenes2
-              .GroupBy(e => e.TipoExamen)
+              var examenesAgrupados = Model.Examenes
+              .GroupBy(e => e.ExamenTipo)
               .OrderBy(g => g.Key);
 
               foreach (var grupo in examenesAgrupados)
               {
                 <li><b>@grupo.Key</b></li>
-                foreach (var examen in grupo.OrderBy(e => e.NombreExamen))
+                foreach (var examen in grupo.OrderBy(e => e.ExamenNombre))
                 {
-                  <li style="margin-left: 20px;">@examen.NombreExamen</li>
+                  <li style="margin-left: 20px;">@examen.ExamenNombre</li>
                 }
               }
             }

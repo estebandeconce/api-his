@@ -16,160 +16,8 @@ namespace HIS_API.Controllers
   public class WeatherForecastController : ControllerBase
   {
 
-    [HttpPost("PostLaboratorio")]
-public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solicitudPost)
-{
-    try
-    {
-        solicitudPost.FechaDeEmision = DateTime.Now;
-
-        using (var db = new DbHis2Context())
-        {
-            var nuevaSolicitud = new HisSolicitud
-            {
-                SolicitudCodigoPaciente = solicitudPost.CP,
-                SolicitudCuentaCorriente = solicitudPost.CtaCorriente,
-                SolicitudFecha = solicitudPost.FechaDeEmision
-            };
-            db.HisSolicituds.Add(nuevaSolicitud);
-            db.SaveChanges();
-
-            int solicitudId = nuevaSolicitud.SolicitudId;
-            solicitudPost.SolicitudId = solicitudId;
-
-            var nuevoDiagnostico = new HisDiagnostico
-            {
-                DiagnosticoDescripcion = solicitudPost.Diagnostico,
-                DiagnosticoSolicitudId = solicitudId
-            };
-            db.HisDiagnosticos.Add(nuevoDiagnostico);
-
-            foreach (var examen in solicitudPost.Examenes2)
-            {
-                var nuevoExamenSolicitud = new HisExamenSolicitud
-                {
-                    ExamSolExamenId = examen.IdExamen,
-                    ExamSolSolicitudId = solicitudId
-                };
-                db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
-                db.SaveChanges();
-            }
-            db.SaveChanges();
-        }
-
-        // Generar el reporte PDF
-        var options = new LaunchOptions
-        {
-            Headless = true,
-        };
-
-        var browserFetcher = new BrowserFetcher();
-        await browserFetcher.DownloadAsync();
-        using var browser = await Puppeteer.LaunchAsync(options);
-        using var page = await browser.NewPageAsync();
-        var url = Url.Action("Solicitud", "Reportes", new { model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
-        await page.GoToAsync(url);
-        var pdfStream = await page.PdfDataAsync();
-
-        var contentDisposition = new System.Net.Mime.ContentDisposition
-        {
-            FileName = $"{solicitudPost.SolicitudId}.pdf",
-            Inline = false
-        };
-        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
-
-        return File(pdfStream, "application/pdf");
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
-    }
-}
-
-
-
-    [HttpGet("imagenologia")]
-    public RenderBtn Imagenologia()
-    {
-      try
-      {
-        var valores = new List<Valor>();
-        var arrayTipoExamen = new List<TipoExamenBtn>();
-
-        using (var db = new DbHis2Context())
-        {
-          // Verificar si se obtienen valores
-          valores = db.HisValors.Select(v => new Valor()
-          {
-            configuracion = v.ValorConfiguracionId ?? 0,
-            id = v.ValorId,
-            nombre = v.ValorNombre ?? string.Empty // Manejo de posible referencia nula
-          }).ToList();
-
-          if (!valores.Any())
-          {
-            throw new Exception("No se encontraron valores en la tabla HIS_VALOR.");
-          }
-
-          // Ejecutar la consulta SQL y verificar si se obtienen resultados
-          var arrayExamenes = db.ExamenView2s.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
-
-          if (!arrayExamenes.Any())
-          {
-            throw new Exception("No se encontraron exámenes visibles.");
-          }
-
-          var groupedExamenes = arrayExamenes.GroupBy(tipoExamen => tipoExamen.TipoNombre).ToList();
-
-          foreach (var items in groupedExamenes)
-          {
-            var tipoExamen = new TipoExamenBtn
-            {
-              NombreUnidad = items.Key ?? string.Empty // Manejo de posible referencia nula
-            };
-            var arrayRegiones = new List<RegionBtn>();
-
-            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
-            {
-              var region = new RegionBtn
-              {
-                NombreRegion = item.Key ?? string.Empty // Manejo de posible referencia nula
-              };
-
-              var regionInfo = db.HisRegions.FirstOrDefault(r => r.RegionNombre == item.Key);
-              region.RutaIcono = regionInfo?.RegionRutaIcono ?? string.Empty; // Manejo de posible referencia nula
-
-              arrayRegiones.Add(region);
-              var arrayExamenes2 = new List<string>();
-
-              foreach (var item2 in item.ToList())
-              {
-                var result = db.HisConfiguracionExamen.Include(c => c.ConfigExamConfiguracion).Where(c => c.ConfigExamExamenId == item2.ExamenId).ToList();
-                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa)); // Manejo de posible referencia nula
-              }
-
-              region.Btn = arrayExamenes2;
-            }
-            tipoExamen.Regiones = arrayRegiones;
-            arrayTipoExamen.Add(tipoExamen);
-          }
-        }
-
-        return new RenderBtn()
-        {
-          Examenes = arrayTipoExamen,
-        };
-      }
-      catch (Exception ex)
-      {
-        // Log the exception (optional)
-        Console.WriteLine(ex.Message);
-        return new RenderBtn(); // Devolver un objeto RenderBtn vacío en lugar de null
-      }
-    }
-
-    [HttpPost("solicitarExamen")]
-    public IActionResult SolicitarExamen([FromBody] SolicitudRequest request)
+    [HttpPost("PostImagenologia")]
+    public IActionResult PostImagenologia([FromBody] SolicitudPost solicitudPost)
     {
       try
       {
@@ -178,8 +26,8 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
           // (1) Llenar HIS_Solicitud
           var nuevaSolicitud = new HisSolicitud
           {
-            SolicitudCodigoPaciente = request.SolicitudCodigoPaciente,
-            SolicitudCuentaCorriente = request.SolicitudCuentaCorriente,
+            SolicitudCodigoPaciente = solicitudPost.CP,
+            SolicitudCuentaCorriente = solicitudPost.CtaCorriente,
             SolicitudFecha = DateTime.Now
           };
           db.HisSolicituds.Add(nuevaSolicitud);
@@ -191,7 +39,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
           // (2) Llenar HIS_Fundamento
           var nuevoFundamento = new HisFundamento
           {
-            FundamentoDescripcion = request.FundamentoDescripcion,
+            FundamentoDescripcion = solicitudPost.Fundamento,
             FundamentoSolicitudId = solicitudId
           };
           db.HisFundamentos.Add(nuevoFundamento);
@@ -199,17 +47,17 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
           // (3) Llenar HIS_Diagnostico
           var nuevoDiagnostico = new HisDiagnostico
           {
-            DiagnosticoDescripcion = request.DiagnosticoDescripcion,
+            DiagnosticoDescripcion = solicitudPost.Diagnostico,
             DiagnosticoSolicitudId = solicitudId
           };
           db.HisDiagnosticos.Add(nuevoDiagnostico);
 
           // (4) Llenar HIS_Examen_Solicitud
-          foreach (var examen in request.Examenes)
+          foreach (var examen in solicitudPost.Examenes)
           {
             var nuevoExamenSolicitud = new HisExamenSolicitud
             {
-              ExamSolExamenId = examen.Id,
+              ExamSolExamenId = examen.ExamenId,
               ExamSolSolicitudId = solicitudId
             };
             db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
@@ -280,6 +128,157 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       }
     }
 
+    [HttpPost("PostLaboratorio")]
+    public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solicitudPost)
+    {
+      try
+      {
+        solicitudPost.FechaDeEmision = DateTime.Now;
+
+        using (var db = new DbHis2Context())
+        {
+          var nuevaSolicitud = new HisSolicitud
+          {
+            SolicitudCodigoPaciente = solicitudPost.CP,
+            SolicitudCuentaCorriente = solicitudPost.CtaCorriente,
+            SolicitudFecha = solicitudPost.FechaDeEmision
+          };
+          db.HisSolicituds.Add(nuevaSolicitud);
+          db.SaveChanges();
+
+          int solicitudId = nuevaSolicitud.SolicitudId;
+          solicitudPost.SolicitudId = solicitudId;
+
+          var nuevoDiagnostico = new HisDiagnostico
+          {
+            DiagnosticoDescripcion = solicitudPost.Diagnostico,
+            DiagnosticoSolicitudId = solicitudId
+          };
+          db.HisDiagnosticos.Add(nuevoDiagnostico);
+
+          foreach (var examen in solicitudPost.Examenes)
+          {
+            var nuevoExamenSolicitud = new HisExamenSolicitud
+            {
+              ExamSolExamenId = examen.ExamenId,
+              ExamSolSolicitudId = solicitudId
+            };
+            db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
+            db.SaveChanges();
+          }
+          db.SaveChanges();
+        }
+
+        // Generar el reporte PDF
+        var options = new LaunchOptions
+        {
+          Headless = true,
+        };
+
+        var browserFetcher = new BrowserFetcher();
+        await browserFetcher.DownloadAsync();
+        using var browser = await Puppeteer.LaunchAsync(options);
+        using var page = await browser.NewPageAsync();
+        var url = Url.Action("Solicitud", "Reportes", new { model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
+        await page.GoToAsync(url);
+        var pdfStream = await page.PdfDataAsync();
+
+        var contentDisposition = new System.Net.Mime.ContentDisposition
+        {
+          FileName = $"{solicitudPost.SolicitudId}.pdf",
+          Inline = false
+        };
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
+
+        return File(pdfStream, "application/pdf");
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+      }
+    }
+
+    [HttpGet("GetImagenologia")]
+    public IActionResult GetImagenologia()
+    {
+      try
+      {
+        var valores = new List<Valor>();
+        var arrayTipoExamen = new List<TipoExamenBtn>();
+
+        using (var db = new DbHis2Context())
+        {
+          // Verificar si se obtienen valores
+          valores = db.HisValors.Select(v => new Valor()
+          {
+            configuracion = v.ValorConfiguracionId ?? 0,
+            id = v.ValorId,
+            nombre = v.ValorNombre ?? string.Empty // Manejo de posible referencia nula
+          }).ToList();
+
+          if (!valores.Any())
+          {
+            return NotFound("No se encontraron valores en la tabla HIS_VALOR.");
+          }
+
+          // Ejecutar la consulta SQL y verificar si se obtienen resultados
+          var arrayExamenes = db.ExamenView2s.FromSqlRaw("SELECT * FROM ExamenView2 ORDER BY Tipo_nombre ASC, Region_nombre ASC, Examen_nombre ASC").ToList();
+
+          if (!arrayExamenes.Any())
+          {
+            return NotFound("No se encontraron exámenes visibles.");
+          }
+
+          var groupedExamenes = arrayExamenes.GroupBy(tipoExamen => tipoExamen.TipoNombre).ToList();
+
+          foreach (var items in groupedExamenes)
+          {
+            var tipoExamen = new TipoExamenBtn
+            {
+              NombreUnidad = items.Key ?? string.Empty // Manejo de posible referencia nula
+            };
+            var arrayRegiones = new List<RegionBtn>();
+
+            foreach (var item in items.GroupBy(region => region.RegionNombre).ToList())
+            {
+              var region = new RegionBtn
+              {
+                NombreRegion = item.Key ?? string.Empty // Manejo de posible referencia nula
+              };
+
+              var regionInfo = db.HisRegions.FirstOrDefault(r => r.RegionNombre == item.Key);
+              region.RutaIcono = regionInfo?.RegionRutaIcono ?? string.Empty; // Manejo de posible referencia nula
+
+              arrayRegiones.Add(region);
+              var arrayExamenes2 = new List<string>();
+
+              foreach (var item2 in item.ToList())
+              {
+                var result = db.HisConfiguracionExamen.Include(c => c.ConfigExamConfiguracion).Where(c => c.ConfigExamExamenId == item2.ExamenId).ToList();
+                arrayExamenes2.Add(GetBtnHtml3(valores, result, item2.ExamenNombre ?? string.Empty, item2.ExamenId, item2.ExamenCodigoFonasa, tipoExamen.NombreUnidad)); // Manejo de posible referencia nula
+              }
+
+              region.Btn = arrayExamenes2;
+            }
+            tipoExamen.Regiones = arrayRegiones;
+            arrayTipoExamen.Add(tipoExamen);
+          }
+        }
+
+        return Ok(new RenderBtn()
+        {
+          Examenes = arrayTipoExamen,
+        });
+      }
+      catch (Exception ex)
+      {
+        // Log the exception (optional)
+        Console.WriteLine(ex.Message);
+        return StatusCode(500, "Ocurrió un error interno en el servidor.");
+      }
+    }
+
+
     [HttpGet("GetLaboratorio")]
     public IActionResult GetLaboratorio()
     {
@@ -331,7 +330,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
 
 
     //Agregar el tipo de examen para que tenga su propio color
-    private static string GetBtnHtml3(List<Valor> Valor, List<HisConfiguracionExaman> CXE, string examenNombre, int examenId, string codigoFonasa)
+    private static string GetBtnHtml3(List<Valor> Valor, List<HisConfiguracionExaman> CXE, string examenNombre, int examenId, string codigoFonasa, string tipoNombre)
     {
       //if CXE is empty se renderiza un btn sin configuración
       int numConfiguracionesXExamen = CXE.Count;
@@ -342,7 +341,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       if (numConfiguracionesXExamen == 0)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
           </div>";
         return Btn;
@@ -352,7 +351,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       else if (numConfiguracionesXExamen == 2 && CXE[0].ConfigExamValorPorDefecto == 5)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>            
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
@@ -367,7 +366,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       else if (numConfiguracionesXExamen == 2)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
@@ -384,14 +383,12 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       else if (CXE[0].ConfigExamConfiguracion.ConfiguracionNombre == "contraste")
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
           </div>";
         return Btn;
       }
-
-
 
       // (*) CON CONTRASTE OBLIGATORIO && SIN LATERALIDAD
       //**********************************
@@ -410,7 +407,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 5)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
@@ -424,7 +421,7 @@ public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solici
       else
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}'>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
             <div class='examen-nombre Radiografía'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>

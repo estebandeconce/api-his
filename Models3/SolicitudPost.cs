@@ -27,13 +27,24 @@
 
     //D I A G N Ó S T I C O
     public string Diagnostico { get; set; }
+    public string Fundamento { get; set; }
 
     //E X Á M E N E S
-    public virtual ICollection<Examen2> Examenes2 { get; set; } = new List<Examen2>();
+    public virtual ICollection<Examen> Examenes { get; set; } = [];
     //public List<Examen2> Examenes2 { get; set; }
 
     //P R O F E S I O N A L
     public string NombreProfesional { get; set; }
     public string RUNProfesional { get; set; }
+  }
+
+  public class Examen
+  {
+    public int ExamenCodigoFonasa { get; set; }
+    public int ExamenId { get; set; }
+    public string ExamenNombre { get; set; }
+    public string ExamenTipo { get; set; }
+    public string Contraste { get; set; } // Propiedad de Imagenología
+    public string Lateralidad { get; set; } // Propiedad de Imagenología
   }
 }
