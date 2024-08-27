@@ -3,7 +3,7 @@
 @model HIS_API.Models3.SolicitudPost
 
 @{
-  int itemNumber = ViewBag.ItemNumber;
+  int itemNumber = 1;
   var cultura = new CultureInfo("es-ES");
   string fechaFormateada = Model.FechaDeEmision.ToString("dddd d MMMM yyyy, HH:mm", cultura);
   string fechaConMayuscula = cultura.TextInfo.ToTitleCase(fechaFormateada);
@@ -59,7 +59,7 @@
         <div class="column col-3"><b>@(itemNumber++) .-Teléfonos</b><br />@Model.Telefono</div>
       </div>
       <div class="row">
-        @if (Model.Origen == "IMAGENOLOGIA")
+        @if (Model.Origen == "IMAGENOLOGÍA")
         {
           <div class="column col"><b>@(itemNumber++) .-Fundamento</b><br />@Model.Fundamento</div>
         }
@@ -76,28 +76,66 @@
     <div class="data">
       <div class="row">
         <div class="column col">
-          <b>@(itemNumber++) .-Solicitud</b><br />
-          <ul>
-            @if (Model.Examenes != null && Model.Examenes.Count > 0)
-            {
-              var examenesAgrupados = Model.Examenes
-              .GroupBy(e => e.ExamenTipo)
-              .OrderBy(g => g.Key);
-
-              foreach (var grupo in examenesAgrupados)
-              {
-                <li><b>@grupo.Key</b></li>
-                foreach (var examen in grupo.OrderBy(e => e.ExamenNombre))
+          <b>@(itemNumber++) .-Solicitud</b><br /><br />
+          @if (Model.Origen == "IMAGENOLOGÍA")
+          {
+            <table class="examenes-table">
+              <thead>
+                <tr>
+                  <th class="left-align">CÓD. FONASA</th>
+                  <th class="left-align">TIPO</th>
+                  <th class="left-align">NOMBRE</th>
+                  <th class="center-align">CONTRASTE</th>
+                  <th class="center-align">LATERALIDAD</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (Model.Examenes != null && Model.Examenes.Count > 0)
                 {
-                  <li style="margin-left: 20px;">@examen.ExamenNombre</li>
+                  foreach (var examen in Model.Examenes.OrderBy(e => e.ExamenNombre))
+                  {
+                    <tr>
+                      <td class="center-align">@examen.ExamenCodigoFonasa</td>
+                      <td class="left-align">@examen.ExamenTipo</td>
+                      <td class="left-align">@examen.ExamenNombre</td>
+                      <td class="center-align">@examen.Contraste</td>
+                      <td class="center-align">@examen.Lateralidad</td>
+                    </tr>
+                  }
+                }
+                else
+                {
+                  <tr>
+                    <td colspan="5">No hay exámenes solicitados.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+          else
+          {
+            <ul>
+              @if (Model.Examenes != null && Model.Examenes.Count > 0)
+              {
+                var examenesAgrupados = Model.Examenes
+                .GroupBy(e => e.ExamenTipo)
+                .OrderBy(g => g.Key);
+
+                foreach (var grupo in examenesAgrupados)
+                {
+                  <li><b>@grupo.Key</b></li>
+                  foreach (var examen in grupo.OrderBy(e => e.ExamenNombre))
+                  {
+                    <li style="margin-left: 20px;">@examen.ExamenNombre</li>
+                  }
                 }
               }
-            }
-            else
-            {
-              <li>No hay exámenes solicitados.</li>
-            }
-          </ul>
+              else
+              {
+                <li>No hay exámenes solicitados.</li>
+              }
+            </ul>
+          }
         </div>
       </div>
     </div>

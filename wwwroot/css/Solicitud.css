@@ -93,6 +93,28 @@ body {
   flex-grow: 1; /* Asegura que todas las columnas crezcan uniformemente */
 }
 
+.examenes-table {
+  border: 1px solid var(--color-gris2);
+  width: 100%;
+  border-collapse: collapse;
+}
+
+  .examenes-table th,
+  .examenes-table td {
+    border: 1px solid var(--color-gris2);
+    padding: 8px;
+  }
+
+    .examenes-table th.left-align,
+    .examenes-table td.left-align {
+      text-align: left;
+    }
+
+    .examenes-table th.center-align,
+    .examenes-table td.center-align {
+      text-align: center;
+    }
+
 /* Clases de columnas del 1 al 12 */
 .col-1 {
   width: 8.33%;

@@ -40,11 +40,11 @@
 
   public class Examen
   {
-    public int ExamenCodigoFonasa { get; set; }
     public int ExamenId { get; set; }
     public string ExamenNombre { get; set; }
     public string ExamenTipo { get; set; }
-    public string Contraste { get; set; } // Propiedad de Imagenología
-    public string Lateralidad { get; set; } // Propiedad de Imagenología
+    public int ExamenCodigoFonasa { get; set; } // Propiedad Exclusiva de Imagenología
+    public string Contraste { get; set; } // Propiedad Exclusiva de Imagenología
+    public string Lateralidad { get; set; } // Propiedad Exclusiva de Imagenología
   }
 }

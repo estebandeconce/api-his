@@ -317,8 +317,8 @@ namespace HIS_API.Controllers
     private static string GetBtnHtmlLaboratorio(string examenNombre, int examenId, string tipoNombre)
     {
       string Btn = $@"
-          <div class='examen-container' id='id{examenId}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
-            <div class='examen-nombre'>{examenNombre}</div>
+          <div class='examen-container' id='id{examenId}' data-tipo='{tipoNombre}'>
+            <div class='examen-nombre' title='{tipoNombre}'>{examenNombre}</div>
           </div>";
       return SanitizeHtml(Btn);
     }
@@ -341,8 +341,8 @@ namespace HIS_API.Controllers
       if (numConfiguracionesXExamen == 0)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}'>
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
           </div>";
         return Btn;
       }
@@ -351,9 +351,9 @@ namespace HIS_API.Controllers
       else if (numConfiguracionesXExamen == 2 && CXE[0].ConfigExamValorPorDefecto == 5)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>            
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
               <option value='BILAT.'>BILAT.</option>
@@ -366,9 +366,9 @@ namespace HIS_API.Controllers
       else if (numConfiguracionesXExamen == 2)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
               <option value='IZQ.'>IZQ.</option>
@@ -383,9 +383,9 @@ namespace HIS_API.Controllers
       else if (CXE[0].ConfigExamConfiguracion.ConfiguracionNombre == "contraste")
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
+          <div class='examen-container' id='{examenId}' data-contraste='Sin contraste' data-lateralidad='No aplica' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}'>
             <div class='examen-contraste' title='SIN Contraste'>SC</div>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
           </div>";
         return Btn;
       }
@@ -407,8 +407,8 @@ namespace HIS_API.Controllers
       else if (numConfiguracionesXExamen == 1 && CXE[0].ConfigExamValorPorDefecto == 5)
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='BILAT.' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' >
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
               <option value='BILAT.'>BILAT.</option>
@@ -421,8 +421,8 @@ namespace HIS_API.Controllers
       else
       {
         Btn = $@"
-          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}' title='{tipoNombre}'>
-            <div class='examen-nombre Radiografía'>{examenNombre}</div>
+          <div class='examen-container' id='{examenId}' data-contraste='No aplica' data-lateralidad='Sin definir' data-codigo-fonasa='{codigoFonasa}' data-tipo='{tipoNombre}'>
+            <div class='examen-nombre Radiografía' title='{tipoNombre}'>{examenNombre}</div>
             <select class='examen-lateralidad'>
               <option value='Sin definir' disabled selected hidden>LAT.</option>
               <option value='IZQ.'>IZQ.</option>

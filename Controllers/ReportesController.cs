@@ -1,5 +1,6 @@
 ﻿using HIS_API.Models3;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Text.Json;
 
 namespace HIS_API.Controllers
@@ -10,8 +11,25 @@ namespace HIS_API.Controllers
     public IActionResult Solicitud(string model)
     {
       var solicitudPost = JsonSerializer.Deserialize<SolicitudPost>(model);
-      //Acá Examenes2 se pierde
-      ViewBag.ItemNumber = 1; // Pasar el número inicial a la vista
+
+      if (solicitudPost.Origen == "IMAGENOLOGÍA")
+      {
+        foreach (var examen in solicitudPost.Examenes)
+        {
+          examen.Contraste = examen.Contraste == "Con contraste" ? "Sí" : "No";
+          examen.ExamenTipo = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(examen.ExamenTipo.Split(' ')[0].ToLower());
+          examen.ExamenNombre = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(examen.ExamenNombre.ToLower());
+          examen.Lateralidad = examen.Lateralidad switch
+          { 
+            "No aplica" => "No",
+            "DER." => "Derecha",
+            "IZQ." => "Izquierda",
+            "BILAT." => "Bilateral",
+            _ => examen.Lateralidad
+          };
+        }
+      }
+
       solicitudPost.EdadString = CalcularEdad(solicitudPost.FechaDeNacimiento);
       return View(solicitudPost);
     }
