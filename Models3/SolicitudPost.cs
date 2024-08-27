@@ -3,10 +3,12 @@
   public class SolicitudPost
   {
     //O R I G E N
+    public string Origen { get; set; }
     public string ServicioDeSalud { get; set; }
     public string Establecimiento { get; set; }
     public string UnidadSolicitante { get; set; }
-    public string FechaDeEmision { get; set; }
+    public DateTime FechaDeEmision { get; set; }
+    public int SolicitudId { get; set; }
 
     //P A C I E N T E
     public string NombrePaciente { get; set; }

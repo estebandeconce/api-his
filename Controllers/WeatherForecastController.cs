@@ -15,38 +15,78 @@ namespace HIS_API.Controllers
   [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
   public class WeatherForecastController : ControllerBase
   {
-    
-    [HttpPost("SolExamenLaboratorio")]
-    public async Task<IActionResult> SolExamenLaboratorio([FromBody] SolicitudPost solicitudPost)
-    {
-      try
-      {
 
+    [HttpPost("PostLaboratorio")]
+public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solicitudPost)
+{
+    try
+    {
+        solicitudPost.FechaDeEmision = DateTime.Now;
+
+        using (var db = new DbHis2Context())
+        {
+            var nuevaSolicitud = new HisSolicitud
+            {
+                SolicitudCodigoPaciente = solicitudPost.CP,
+                SolicitudCuentaCorriente = solicitudPost.CtaCorriente,
+                SolicitudFecha = solicitudPost.FechaDeEmision
+            };
+            db.HisSolicituds.Add(nuevaSolicitud);
+            db.SaveChanges();
+
+            int solicitudId = nuevaSolicitud.SolicitudId;
+            solicitudPost.SolicitudId = solicitudId;
+
+            var nuevoDiagnostico = new HisDiagnostico
+            {
+                DiagnosticoDescripcion = solicitudPost.Diagnostico,
+                DiagnosticoSolicitudId = solicitudId
+            };
+            db.HisDiagnosticos.Add(nuevoDiagnostico);
+
+            foreach (var examen in solicitudPost.Examenes2)
+            {
+                var nuevoExamenSolicitud = new HisExamenSolicitud
+                {
+                    ExamSolExamenId = examen.IdExamen,
+                    ExamSolSolicitudId = solicitudId
+                };
+                db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
+                db.SaveChanges();
+            }
+            db.SaveChanges();
+        }
+
+        // Generar el reporte PDF
         var options = new LaunchOptions
         {
-          Headless = true,
+            Headless = true,
         };
 
         var browserFetcher = new BrowserFetcher();
         await browserFetcher.DownloadAsync();
-
         using var browser = await Puppeteer.LaunchAsync(options);
         using var page = await browser.NewPageAsync();
-
-        // Generar una URL completa con los datos de la solicitud
         var url = Url.Action("Solicitud", "Reportes", new { model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
-
         await page.GoToAsync(url);
-        //Acá vuelve después de pasar por ReportesController
         var pdfStream = await page.PdfDataAsync();
 
-        return File(pdfStream, "application/pdf", "miReporte.pdf");
-      }
-      catch (Exception ex)
-      {
-        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
-      }
+        var contentDisposition = new System.Net.Mime.ContentDisposition
+        {
+            FileName = $"{solicitudPost.SolicitudId}.pdf",
+            Inline = false
+        };
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
+
+        return File(pdfStream, "application/pdf");
     }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
+    }
+}
+
+
 
     [HttpGet("imagenologia")]
     public RenderBtn Imagenologia()
@@ -240,7 +280,7 @@ namespace HIS_API.Controllers
       }
     }
 
-    [HttpGet("laboratorio")]
+    [HttpGet("GetLaboratorio")]
     public IActionResult GetLaboratorio()
     {
       try
@@ -267,64 +307,6 @@ namespace HIS_API.Controllers
 
         // (3) Devolver un JSON
         return Ok(groupedExamenes);
-      }
-      catch (Exception ex)
-      {
-        // Manejo de errores
-        return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
-      }
-    }
-
-    [HttpPost("SolicitarExamenLaboratorio")]
-    public IActionResult SolicitarExamenLaboratorio([FromBody] SolicitudRequest request)
-    {
-      try
-      {
-        using (var db = new DbHis2Context())
-        {
-          var nuevaSolicitud = new HisSolicitud
-          {
-            SolicitudCodigoPaciente = request.SolicitudCodigoPaciente,
-            SolicitudCuentaCorriente = request.SolicitudCuentaCorriente,
-            SolicitudFecha = DateTime.Now
-          };
-          db.HisSolicituds.Add(nuevaSolicitud);
-          db.SaveChanges();
-
-          int solicitudId = nuevaSolicitud.SolicitudId;
-
-          var nuevoFundamento = new HisFundamento
-          {
-            FundamentoDescripcion = request.FundamentoDescripcion,
-            FundamentoSolicitudId = solicitudId
-          };
-          db.HisFundamentos.Add(nuevoFundamento);
-
-          var nuevoDiagnostico = new HisDiagnostico
-          {
-            DiagnosticoDescripcion = request.DiagnosticoDescripcion,
-            DiagnosticoSolicitudId = solicitudId
-          };
-          db.HisDiagnosticos.Add(nuevoDiagnostico);
-
-          foreach (var examen in request.Examenes)
-          {
-            var nuevoExamenSolicitud = new HisExamenSolicitud
-            {
-              ExamSolExamenId = examen.Id,
-              ExamSolSolicitudId = solicitudId
-            };
-            db.HisExamenSolicituds.Add(nuevoExamenSolicitud);
-            db.SaveChanges();
-
-            // Obtener el ID del examen-solicitud recién creado
-            int examenSolicitudId = nuevoExamenSolicitud.ExamSolId;
-          }
-          db.SaveChanges();
-
-          // Devolver el ID de la solicitud recién creada
-          return Ok(solicitudId);
-        }
       }
       catch (Exception ex)
       {

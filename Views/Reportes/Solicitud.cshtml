@@ -1,4 +1,13 @@
-﻿@model HIS_API.Models3.SolicitudPost
+﻿@using System.Globalization
+
+@model HIS_API.Models3.SolicitudPost
+
+@{
+  int itemNumber = ViewBag.ItemNumber;
+  var cultura = new CultureInfo("es-ES");
+  string fechaFormateada = Model.FechaDeEmision.ToString("dddd d MMMM yyyy, HH:mm", cultura);
+  string fechaConMayuscula = cultura.TextInfo.ToTitleCase(fechaFormateada);
+}
 
 <!DOCTYPE html>
 <html lang="es-cl">
@@ -11,7 +20,7 @@
 <body>
   <div class="header">
     <img class="icon-small" src="/img/hsp_logo_coq2.png" alt="Alternate Text" />
-    <div class="titulo"><b>Solicitud de Exámenes de<br />Laboratorio N° 100</b></div>
+    <div class="titulo"><b>Solicitud de Exámenes de<br />@Model.Origen N° @Model.SolicitudId</b></div>
     <img class="icon-medium" src="/img/hps_logo_gob.jpg" alt="Alternate Text" />
   </div>
 
@@ -19,12 +28,12 @@
     <div class="info">O R I G E N</div>
     <div class="data">
       <div class="row">
-        <div class="column col-6"><b>1.- Servicio de Salud</b><br />@Model.ServicioDeSalud</div>
-        <div class="column col-6"><b>2.- Establecimiento</b><br />@Model.Establecimiento</div>
+        <div class="column col-6"><b>@(itemNumber++) .- Servicio de Salud</b><br />@Model.ServicioDeSalud</div>
+        <div class="column col-6"><b>@(itemNumber++) .- Establecimiento</b><br />@Model.Establecimiento</div>
       </div>
       <div class="row">
-        <div class="column col-6"><b>3.- Unidad Solicitante</b><br />@Model.UnidadSolicitante</div>
-        <div class="column col-6"><b>4.- Fecha de Emisión</b><br />@Model.FechaDeEmision</div>
+        <div class="column col-6"><b>@(itemNumber++) .- Unidad Solicitante</b><br />@Model.UnidadSolicitante</div>
+        <div class="column col-6"><b>@(itemNumber++) .- Fecha de Emisión</b><br />@fechaConMayuscula</div>
       </div>
     </div>
   </div>
@@ -33,26 +42,24 @@
     <div class="info">P A C I E N T E</div>
     <div class="data">
       <div class="row">
-        <div class="column col-6"><b>5.-Nombre</b><br />@Model.NombrePaciente</div>
-        <div class="column col-1_5"><b>6.-Ficha</b><br />@Model.Ficha</div>
-        <div class="column col-1_5"><b>7.-C.P.</b><br />@Model.CP</div>
-        <div class="column col-3"><b>8.-Cta. Corriente</b><br />@Model.CtaCorriente</div>
+        <div class="column col-6"><b>@(itemNumber++) .-Nombre</b><br />@Model.NombrePaciente</div>
+        <div class="column col-1_5"><b>@(itemNumber++) .-Ficha</b><br />@Model.Ficha</div>
+        <div class="column col-1_5"><b>@(itemNumber++) .-C.P.</b><br />@Model.CP</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Cta. Corriente</b><br />@Model.CtaCorriente</div>
       </div>
       <div class="row">
-        <div class="column col-3"><b>9.-RUN</b><br />@Model.RUNPaciente</div>
-        <div class="column col-3"><b>10.-Sexo</b><br />@Model.Sexo</div>
-        <div class="column col-3"><b>11.-Fecha de Nacimiento</b><br />@Model.FechaDeNacimiento.ToString("dd/MM/yyyy")</div>
-        <div class="column col-3"><b>12.-Edad</b><br />@Model.EdadString</div>
+        <div class="column col-3"><b>@(itemNumber++) .-RUN</b><br />@Model.RUNPaciente</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Sexo</b><br />@Model.Sexo</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Fecha de Nacimiento</b><br />@Model.FechaDeNacimiento.ToString("dd/MM/yyyy")</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Edad</b><br />@Model.EdadString</div>
       </div>
       <div class="row">
-        <div class="column col-6"><b>13.-Dirección</b><br />@Model.Direccion</div>
-        <div class="column col-6"><b>14.-Ciudad o Comuna</b><br />@Model.Comuna</div>
+        <div class="column col-6"><b>@(itemNumber++) .-Dirección</b><br />@Model.Direccion</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Ciudad o Comuna</b><br />@Model.Comuna</div>
+        <div class="column col-3"><b>@(itemNumber++) .-Teléfonos</b><br />@Model.Telefono</div>
       </div>
       <div class="row">
-        <div class="column col"><b>15.-Teléfonos</b><br />@Model.Telefono</div>
-      </div>
-      <div class="row">
-        <div class="column col"><b>16.-Diagnóstico</b><br />@Model.Diagnostico</div>
+        <div class="column col"><b>@(itemNumber++) .-Diagnóstico</b><br />@Model.Diagnostico</div>
       </div>
     </div>
   </div>
@@ -62,7 +69,7 @@
     <div class="data">
       <div class="row">
         <div class="column col">
-          <b>17.-Solicitud</b><br />
+          <b>@(itemNumber++) .-Solicitud</b><br />
           <ul>
             @if (Model.Examenes2 != null && Model.Examenes2.Count > 0)
             {
@@ -93,9 +100,9 @@
     <div class="info">P R O F.</div>
     <div class="data">
       <div class="row">
-        <div class="column col-4"><b>18.-Nombre</b><br />@Model.NombreProfesional</div>
-        <div class="column col-4"><b>19.-RUN</b><br />@Model.RUNProfesional</div>
-        <div class="column col-4"><b>20.-Firma</b></div>
+        <div class="column col-4"><b>@(itemNumber++) .-Nombre</b><br />@Model.NombreProfesional</div>
+        <div class="column col-4"><b>@(itemNumber++) .-RUN</b><br />@Model.RUNProfesional</div>
+        <div class="column col-4"><b>@(itemNumber++) .-Firma</b></div>
       </div>
     </div>
   </div>

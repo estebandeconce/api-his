@@ -11,6 +11,7 @@ namespace HIS_API.Controllers
     {
       var solicitudPost = JsonSerializer.Deserialize<SolicitudPost>(model);
       //Acá Examenes2 se pierde
+      ViewBag.ItemNumber = 1; // Pasar el número inicial a la vista
       solicitudPost.EdadString = CalcularEdad(solicitudPost.FechaDeNacimiento);
       return View(solicitudPost);
     }
