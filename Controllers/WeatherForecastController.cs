@@ -17,10 +17,12 @@ namespace HIS_API.Controllers
   {
 
     [HttpPost("PostImagenologia")]
-    public IActionResult PostImagenologia([FromBody] SolicitudPost solicitudPost)
+    public async Task<IActionResult> PostImagenologia([FromBody] SolicitudPost solicitudPost)
     {
       try
       {
+        solicitudPost.FechaDeEmision = DateTime.Now;
+
         using (var db = new DbHis2Context())
         {
           // (1) Llenar HIS_Solicitud
@@ -118,8 +120,31 @@ namespace HIS_API.Controllers
           db.SaveChanges();
 
           // Devolver el ID de la solicitud recién creada
-          return Ok(new { SolicitudId = solicitudId });
+          solicitudPost.SolicitudId = solicitudId;
         }
+
+        // Generar el reporte PDF
+        var options = new LaunchOptions
+        {
+          Headless = true,
+        };
+
+        var browserFetcher = new BrowserFetcher();
+        await browserFetcher.DownloadAsync();
+        using var browser = await Puppeteer.LaunchAsync(options);
+        using var page = await browser.NewPageAsync();
+        var url = Url.Action("Solicitud", "Reportes", new { model = JsonSerializer.Serialize(solicitudPost) }, Request.Scheme);
+        await page.GoToAsync(url);
+        var pdfStream = await page.PdfDataAsync();
+
+        var contentDisposition = new System.Net.Mime.ContentDisposition
+        {
+          FileName = $"{solicitudPost.SolicitudId}.pdf",
+          Inline = false
+        };
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
+
+        return File(pdfStream, "application/pdf");
       }
       catch (Exception ex)
       {
@@ -127,6 +152,7 @@ namespace HIS_API.Controllers
         return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}" });
       }
     }
+
 
     [HttpPost("PostLaboratorio")]
     public async Task<IActionResult> PostLaboratorio([FromBody] SolicitudPost solicitudPost)

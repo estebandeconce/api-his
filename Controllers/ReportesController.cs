@@ -30,6 +30,11 @@ namespace HIS_API.Controllers
         }
       }
 
+      solicitudPost.Examenes = solicitudPost.Examenes
+            .OrderBy(e => e.ExamenTipo)
+            .ThenBy(e => e.ExamenNombre)
+            .ToList();
+
       solicitudPost.EdadString = CalcularEdad(solicitudPost.FechaDeNacimiento);
       return View(solicitudPost);
     }

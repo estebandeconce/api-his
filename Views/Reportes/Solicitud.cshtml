@@ -92,7 +92,7 @@
               <tbody>
                 @if (Model.Examenes != null && Model.Examenes.Count > 0)
                 {
-                  foreach (var examen in Model.Examenes.OrderBy(e => e.ExamenNombre))
+                  foreach (var examen in Model.Examenes)
                   {
                     <tr>
                       <td class="center-align">@examen.ExamenCodigoFonasa</td>
@@ -117,17 +117,15 @@
             <ul>
               @if (Model.Examenes != null && Model.Examenes.Count > 0)
               {
-                var examenesAgrupados = Model.Examenes
-                .GroupBy(e => e.ExamenTipo)
-                .OrderBy(g => g.Key);
-
-                foreach (var grupo in examenesAgrupados)
+                string currentTipo = null;
+                foreach (var examen in Model.Examenes)
                 {
-                  <li><b>@grupo.Key</b></li>
-                  foreach (var examen in grupo.OrderBy(e => e.ExamenNombre))
+                  if (examen.ExamenTipo != currentTipo)
                   {
-                    <li style="margin-left: 20px;">@examen.ExamenNombre</li>
+                    currentTipo = examen.ExamenTipo;
+                    <li><b>@currentTipo</b></li>
                   }
+                  <li style="margin-left: 20px;">@examen.ExamenNombre</li>
                 }
               }
               else
@@ -135,6 +133,7 @@
                 <li>No hay exámenes solicitados.</li>
               }
             </ul>
+
           }
         </div>
       </div>
